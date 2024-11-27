@@ -9,4 +9,5 @@ urlpatterns = [
     path('hospitalstaffclick/recepclick', views.recep_click_page),
     path('hospitalstaffclick/doctorclick', views.doctor_click_page),
     path('hospitalstaffclick/nurseclick', views.nurse_click_page),
+    path('aboutus', views.about_us),
 ]

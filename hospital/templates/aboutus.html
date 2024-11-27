@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>About us</title>
+  <style media="screen">
+    .jumbotron {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      background-image: url('{% static "image/about_us.jpg" %}');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      height: 550px
+    }
+
+    .jumbotron h1 {
+      text-align: center;
+    }
+
+    .alert {
+      margin: 0px;
+    }
+
+    .blur-background {
+    position: relative; /* Needed for positioning */
+    width: 100%;
+    height: 100vh; /* Full height */
+    overflow: hidden; /* Hide anything outside the container */
+  }
+
+  /* The background image */
+  .blur-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('{% static "image/about_us.jpg" %}');
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px); /* Adjust blur intensity here */
+    z-index: -1; /* Ensure it stays behind the content */
+  }
+
+  /* Content on top of the background */
+  .content {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    padding-top: 20%;
+  }
+  </style>
+</head>
+
+<body>
+  {% include "navbar.html" %}
+  <!-- <center>
+    <h3 class='alert alert-success' style="margin-bottom:0px;">About Us !</h3>
+  </center> -->
+  <div class="blur-background" style="margin-bottom: 0px;margin-top: 0px;">
+    <br><br><br><br><br><br>
+    <h1 class="display-4" style="font-family: 'Lucida Sans'; text-align: center;">Hello</h1>
+    <p class="lead" style="font-family: 'Lucida Sans';">A service that support Medical Staff and Patient from group 09 CC01.</p>
+    <hr class="my-4" >
+    <p style="font-family: 'Lucida Sans';">Press the button to explore our Website.</p>
+    <p class="lead">
+      <a class="btn btn-primary btn-lg" href="/" role="button" style="font-family: 'Lucida Sans';">HOME</a>
+    </p>
+  </div>
+  {% include "footer.html" %}
+</body>
+
+
+</html>

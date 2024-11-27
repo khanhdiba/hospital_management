@@ -27,3 +27,6 @@ def doctor_click_page(request):
 def nurse_click_page(request):
   return render(request, 'nurseclick.html')
 
+def about_us(request):
+  return render(request, 'aboutus.html')
+
