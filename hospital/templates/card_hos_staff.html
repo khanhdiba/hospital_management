@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    .card {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      max-width: 300px;
+      margin: auto;
+      text-align: center;
+      font-family: "Lucida Sans";
+    }
+
+    .title {
+      color: black;
+      font-family: 'Lucida Sans';
+      font-size: 18px;
+    }
+
+    button {
+      border: none;
+      outline: 0;
+      display: inline-block;
+      padding: 8px;
+      color: white;
+      background-color: #1488d8;
+      text-align: center;
+      cursor: pointer;
+      width: 100%;
+      font-size: 18px;
+    }
+
+    button:hover,
+    a:hover {
+      opacity: 0.7;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: auto auto auto auto;
+      padding: 5px;
+    }
+
+    a:link {
+      text-decoration: none;
+    }
+
+    a {
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="grid-container">
+    <div class="grid-item">
+      <div class="card">
+        <img src="{% static "image/adminlogo.jpg" %}" alt="Admin picture" style="width:100%">
+        <p class="title">Administrator</p>
+        <p><button><a href="hospitalstaffclick/adminclick">Access System</a></button></p>
+      </div>
+
+    </div>
+
+    <div class="grid-item">
+        <div class="card">
+          <img src="{% static "image/receplogo.jpg" %}" alt="Receptionist picture" style="width:100%">
+          <p class="title">Receptionist</p>
+          <p><button><a href="hospitalstaffclick/recepclick">Access System</a></button></p>
+        </div>
+      </div>
+
+    <div class="grid-item">
+      <div class="card">
+        <img src="{% static "image/doclogo.webp" %}" alt="Doctor picture" style="width:100%">
+        <p class="title">Doctor</p>
+        <p><button><a href="hospitalstaffclick/doctorclick">Access System</a></button></p>
+      </div>
+    </div>
+
+    <div class="grid-item">
+      <div class="card">
+        <img src="{% static "image/nurselogo.webp" %}" alt="Nurse picture" style="width:100%">
+        <p class="title">NURSE</p>
+        <p><button><a href="hospitalstaffclick/nurseclick">Access System</a></button></p>
+      </div>
+    </div>
+  </div>
+ 
+
+</body>
+
+</html>

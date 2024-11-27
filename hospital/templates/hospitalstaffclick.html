@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{%load static%}
+
+{% block content %}
+<style media="screen">
+    .jumbotron {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      background-image: url('{% static "image/hs1.jpg" %}');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      height: 1000px;
+    }
+</style>
+
+<br>
+<br>
+
+<div class="jumbotron" style="margin-bottom:0px;">
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+  <h1 class="display-4" style="text-align:center;font-family:'Lucida Sans';">Hello, Staff</h1>
+
+  <p class="lead" style="font-family: 'Lucida Sans';">Welcome to Baka Hospital Management System</p>
+  <!-- <hr class="my-4"> -->
+
+  <!-- <p class="lead">
+    <a class="btn btn-danger btn-lg" href="/patientsignup" role="button">Register Your Account</a>
+    <a class="btn btn-success btn-lg" href="/patientlogin" role="button">Login</a>
+  </p> -->
+</div>
+{%include "card_hos_staff.html"%}
+
+{% endblock content %}
