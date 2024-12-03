@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+<head>
+    <style media="screen">
+        /* The background image */
+  .blur-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('{% static "image/about_us.jpg" %}');
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px); /* Adjust blur intensity here */
+    z-index: -1; /* Ensure it stays behind the content */
+  }
+
+  /* Content on top of the background */
+  .content {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    padding-top: 20%;
+  }
+
+  .login-form-container {
+            width: 100%;
+            max-width: 400px; /* Set max-width for responsiveness */
+            padding: 20px;
+            background-color: aliceblue;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-label {
+            font-family: 'Lucida Sans';
+        }
+
+        .btn-primary {
+            font-family: 'Lucida Sans';
+        }
+
+        .signup-link {
+            font-family: 'Lucida Sans';
+        }
+    </style>
+</head>
+<div class="blur-background">
+<body style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f8f9fa;">
+    <div style="width: 100%; padding: 20px; background-color:aliceblue; border-radius: 8px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
+    <!-- <div class="login-form-container"> -->
+        <h1 style="font-family: 'Lucida Sans'; margin-bottom: 20px; text-align: center;">Admin Login Page</h1>
+        <h5 style="font-family: 'Lucida Sans';">Enter your username and password</h5>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="username" class="form-label" style="font-family: 'Lucida Sans';">Username</label>
+                <!-- <input type="text" class="form-control" name="username" style="font-family: 'Lucida Sans';" placeholder="Username"> -->
+                {% render_field form.username class="form-control" placeholder="Username" %}
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label" style="font-family: 'Lucida Sans';" placeholder="Password">Password</label>
+                <!-- <input type="password" class="form-control" name="password"> -->
+                {% render_field form.password class="form-control" placeholder="Password" %}
+            </div>
+
+            <!-- {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger d-flex align-items-center" role="alert">
+                        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+                            <use xlink:href="#exclamation-triangle-fill"></use>
+                        </svg>
+                        <div>Wrong Password</div>
+                    </div>
+                {% endfor %}
+            {% endif %} -->
+
+            <!-- <button type="submit" class="btnSubmit" style="font-family: 'Lucida Sans';">Login</button> -->
+            <button 
+            type="submit" 
+            class="btnSubmit" 
+            style="
+                font-family: 'Lucida Sans'; 
+                background-color: #007bff; 
+                color: white; 
+                border: none; 
+                padding: 10px 20px; 
+                border-radius: 10px; 
+                cursor: pointer; 
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+                transition: background-color 0.3s ease;"
+            onmouseover="this.style.backgroundColor='#0056b3'" 
+            onmouseout="this.style.backgroundColor='#007bff'"
+        >
+            Login
+        </button>
+        </form>
+    </div>
+</div>
+</body>
+
+{% endblock content %}

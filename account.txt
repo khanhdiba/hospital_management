@@ -1,0 +1,18 @@
+admin account:
+username: admin2
+password: 12345
+
+
+doctor account:
+username: doctor1
+password: 12345
+
+
+nurse account:
+username: nurse1
+password: 12345
+
+
+receptionist account:
+username: recep1
+password: 12345
