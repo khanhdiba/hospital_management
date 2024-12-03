@@ -20,9 +20,9 @@ FACULTY OF COMPUTER SCIENCE AND ENGINEERING
 
 <h2 align="center">Baka Hospital Management</h2>
 
-![](/img/homepage.png)
+<!-- ![](/img/homepage.png) -->
 
-<h2 align="center">⚒️ Languages-Frameworks-Tools ⚒️</h2>
+<h2 align="center">Languages, Technologies and Tools</h2>
 <br/>
 <div align="center">
     <img src="https://skillicons.dev/icons?i=mysql,python,django,bootstrap,html,css,vscode,github,git" />
