@@ -71,7 +71,11 @@ As the clip shows, we can perform some simple operations such as:
     <!-- <a href="https://github.com/khanhdiba"><img src="https://avatars.githubusercontent.com/u/124603194?v=4" title="thaiquangphat" width="50" height="50"></a>
     <a href="https://github.com/pdz1804"><img src="https://avatars.githubusercontent.com/u/123137268?v=4" title="pdz1804" width="50" height="50"></a>
     <a href="https://github.com/Frankie2030"><img src="https://avatars.githubusercontent.com/u/144931593?v=4" title="koi" width="50" height="50"></a> -->
-    <h2>Fullstack-developer:</h2>
-    <a href="https://github.com/khanhdiba"><img src="https://avatars.githubusercontent.com/u/124603194?v=4" title="dibakhanh" width="50" height="50"></a>
+    <h2>Fullstack Developer:</h2>
+    <a href="https://github.com/khanhdiba"><img src="https://avatars.githubusercontent.com/u/124603194?v=4" title="khanhdiba" width="50" height="50"></a>
+    <h2>Data Engineer:</h2>
+    <a href="https://github.com/ngmikhoi"><img src="https://avatars.githubusercontent.com/u/143086099?v=4" title="ngmikhoi" width="50" height="50"></a>
+    <h2>Backend Developer:</h2>
+    <a href="https://github.com/TNAK2004"><img src="https://avatars.githubusercontent.com/u/186653019?v=4" title="TNAK2004" width="50" height="50"></a>
     
 </div>
