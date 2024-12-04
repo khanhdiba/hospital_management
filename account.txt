@@ -16,3 +16,15 @@ password: 12345
 receptionist account:
 username: recep1
 password: 12345
+
+
+
+UPDATE: account is changed when you clone this project:
+
+Go here to create admin account: http://127.0.0.1:8000/adminsignup
+
+Go here to create doctor account: http://127.0.0.1:8000/doctorsignup
+
+Go here to create nurse account: http://127.0.0.1:8000/nursesignup
+
+Go here to create receptionist account: http://127.0.0.1:8000/recepsignup

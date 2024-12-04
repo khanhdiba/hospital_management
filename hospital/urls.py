@@ -40,6 +40,7 @@ urlpatterns = [
     path('nurse-dashboard', views.nurse_dashboard, name='nurse-dashboard'),
     path('admin-dashboard', views.admin_dashboard, name='admin-dashboard'),
     
+    
 ]
 
     # path('adminlogin', LoginView.as_view(template_name='hospital/adminlogin.html')),
