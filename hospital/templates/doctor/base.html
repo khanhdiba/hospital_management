@@ -83,9 +83,12 @@
 
     p {
       text-align: center;
-
+      font-family: 'Lucida Sans';
     }
 
+    h1,h2,h3,h4,h5,h6{
+      font-family: 'Lucida Sans';
+    }
 
 
 
@@ -272,25 +275,31 @@
 </head>
 
 <body>
-  <nav class="menu" tabindex="0">
+  <nav class="menu" tabindex="0" style=" width:15.6%;">
     <div class="smartphone-menu-trigger"></div>
     <header class="avatar">
-      <img src="{% static "image/adminpropic.png" %}" alt = 'avatar'>
+      <img src="{% static "image/doctorpropic.png" %}" alt = 'avatar'>
       <br><br>
-      <h6>Patient</h6>
+      <h6>Doctor</h6>
       <h2>{{request.user.first_name}}</h2>
     </header>
     <ul>
-      <li tabindex="0" class="icon-dashboard"> <a style="color:white; text-decoration:none;" href="/admin-dashboard"><span>Dashboard</span></a> </li>
-      <!-- <li tabindex="0" class="icon-customers"> <a style="color:white; text-decoration:none;" href="/admin-doctor"><span>Doctor</span></a></li>
-      <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/admin-patient"><span>Patient</span></a></li>
-      <li tabindex="0" class="icon-calendar"> <a style="color:white; text-decoration:none;" href="/admin-appointment"><span>Appointment</span></a></li> -->
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-dashboard"><span>Dashboard</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-treatment"><span>Treatment</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-doctor"><span>Doctor</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-patient"><span>Patient</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-nurse"><span>Nurse</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-other"><span>Others</span></a> </li>
+
+      <!-- <li tabindex="0" class="icon-customers"> <a style="color:white; text-decoration:none;" href="/doctor-doctor"><span>Doctor</span></a></li>
+      <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/doctor-doctor"><span>doctor</span></a></li>
+      <li tabindex="0" class="icon-calendar"> <a style="color:white; text-decoration:none;" href="/doctor-appointment"><span>Appointment</span></a></li> -->
     </ul>
   </nav>
 
   <div class="bs-example" style="font-family: 'Lucida Sans';">
-    <nav class="navbar navbar-expand-md  navbar-dark fixed-top" style="background:#1488d8; margin-left: 15.6%;">
-      <a href="/admin-dashboard" class="navbar-brand">Baka Hospital</a>
+    <nav class="navbar navbar-expand-md  navbar-dark fixed-top" style="background:#1488d8; margin-left:15.6%;">
+      <a href="/doctor-dashboard" class="navbar-brand">Baka Hospital</a>
       <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
       </button>

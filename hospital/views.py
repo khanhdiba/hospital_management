@@ -211,33 +211,28 @@ def afterlogin_view(request):
 @login_required(login_url='patientlogin')
 @user_passes_test(is_patient)
 def patient_dashboard(request):
-#    return HttpResponse("Hello")
-    return render(request,'patient/patient_dashboard.html')
+    return render(request,'patient/dashboard.html')
 
 
 @login_required(login_url='doctorlogin')
 @user_passes_test(is_doctor)
 def doctor_dashboard(request):
-#    return render(request, 'doctor/doctor_dashboard.html')
-    return HttpResponse("Log in successfully")
+   return render(request, 'doctor/dashboard.html')
 
 
 @login_required(login_url='nurselogin')
 @user_passes_test(is_nurse)
 def nurse_dashboard(request):
-#    return render(request, 'nurse/nurse_dashboard.html')
-    return HttpResponse("Log in successfully")
+   return render(request, 'nurse/dashboard.html')
 
 
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def admin_dashboard(request):
-#    return render(request, 'adminn/admin_dashboard.html')
-    return HttpResponse("Log in successfully")
+   return render(request, 'adminn/dashboard.html')
 
 
 @login_required(login_url='receplogin')
 @user_passes_test(is_recep)
 def recep_dashboard(request):
-#    return render(request, 'patient/patient_dashboard.html')
-    return HttpResponse("Log in successfully")
+   return render(request, 'recep/dashboard.html')
