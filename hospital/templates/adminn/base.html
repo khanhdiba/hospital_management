@@ -14,6 +14,24 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
+  <style>
+    table {
+        width: 80%;
+        border-collapse: collapse;
+        margin: 20px auto;
+    }
+    table, th, td {
+        border: 1px solid black;
+    }
+    th, td {
+        padding: 10px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
   <style media="screen">
     a:link {
       text-decoration: none;
@@ -279,13 +297,26 @@
   <nav class="menu" tabindex="0" style=" width:15.6%;">
     <div class="smartphone-menu-trigger"></div>
     <header class="avatar">
-      <img src="{% static "image/adminpropic.png" %}" alt = 'avatar'>
+      <!-- <img src="{% static "image/adminpropic.png" %}" alt = 'avatar'> -->
       <br><br>
       <h6>Admin</h6>
       <h2>{{request.user.first_name}}</h2>
     </header>
     <ul>
       <li tabindex="0" > <a style="color:white; text-decoration:none;" href="/admin-dashboard"><span>Dashboard</span></a> </li>
+      <li tabindex="0" > <a style="color:white; text-decoration:none;" href="/admin-doctor"><span>Doctor</span></a> </li><!--3-->
+      <li tabindex="0" > <a style="color:white; text-decoration:none;" href="/admin-nurse"><span>Nurse</span></a> </li><!--5-->
+      <li tabindex="0" > <a style="color:white; text-decoration:none;" href="/admin-patient"><span>Patient</span></a> </li><!--1-->
+      <li tabindex="0" > <a style="color:white; text-decoration:none;" href="/admin-record"><span>Medical Record</span></a> </li>
+      <li tabindex="0" > <a style="color:white; text-decoration:none;" href="/admin-recep"><span>Receptionist</span></a> </li><!--7-->
+      <li tabindex="0" > <a style="color:white; text-decoration:none;" href="/admin-department"><span>Department</span></a> </li><!--6-->
+      <li tabindex="0" > <a style="color:white; text-decoration:none;" href="/admin-appointment"><span>Appointment</span></a> </li><!--2-->
+      <li tabindex="0" > <a style="color:white; text-decoration:none;" href="/admin-room"><span>Room</span></a> </li><!--4-->
+      <li tabindex="0" > <a style="color:white; text-decoration:none;" href="/admin-treatment"><span>Treatment</span></a> </li>
+      <li tabindex="0" > <a style="color:white; text-decoration:none;" href="/admin-presciption"><span>Presciption</span></a> </li>
+      <li tabindex="0" > <a style="color:white; text-decoration:none;" href="/admin-bill"><span>Receipt and Bill</span></a> </li>
+      <li tabindex="0" > <a style="color:white; text-decoration:none;" href="/admin-other"><span>Others</span></a> </li>
+
       <!-- <li tabindex="0" class="icon-customers"> <a style="color:white; text-decoration:none;" href="/admin-doctor"><span>Doctor</span></a></li>
       <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/admin-admin"><span>admin</span></a></li>
       <li tabindex="0" class="icon-calendar"> <a style="color:white; text-decoration:none;" href="/admin-appointment"><span>Appointment</span></a></li> -->
@@ -308,7 +339,8 @@
   </div>
 
   {% block content %}
-  
+  <br><br><br><br><br><br>
+
   {% endblock content %}
   {% comment %} <footer>
 

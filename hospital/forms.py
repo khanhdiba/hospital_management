@@ -43,6 +43,18 @@ class PatientUserForm(forms.ModelForm):
         widgets = {
         'password': forms.PasswordInput()
         }
+class PatientForm(forms.ModelForm):
+  class Meta:
+        model = models.Patient
+        fields = ['patientid', 'patientssn', 'firstname', 'midname', 'lastname', 'patientdob', 'gender', 'phonenumber', 'street', 'district', 'city']
+
+
+class Appointment(forms.ModelForm):
+    class Meta:
+        model = models.Appointment
+        fields = ['appointmentid', 'patientid', 'doctorid', 'appointmentdate', 'appointmenttime']
+
+
 
 
 

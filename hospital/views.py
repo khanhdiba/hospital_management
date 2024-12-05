@@ -1,10 +1,10 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.contrib.auth.models import Group
-from . import forms
+from . import forms, models
 from django.contrib.auth.decorators import login_required,user_passes_test
 
 
@@ -38,60 +38,6 @@ def nurse_click_page(request):
 
 def about_us(request):
   return render(request, 'aboutus.html')
-
-# def login_page_patient(request):
-#   if request.method == "POST":
-#     username = request.POST['username']
-#     password = request.POST['password']
-#     user = authenticate(request, username=username, password=password)
-#     if user is not None:
-#       login(request, user)
-#       return redirect('main_page')
-#     else:
-#       messages.success(request, ("The credentials you provided cannot be determined to be authentic."))
-#       return redirect('patient_login')
-#   return render(request, 'patientlogin.html', {})
-
-# def admin_login_page(request):
-#   if request.method == "POST":
-#     username = request.POST['username']
-#     password = request.POST['password']
-#     user = authenticate(request, username=username, password=password)
-#     if user is not None:
-#       login(request, user)
-#       return redirect('dashboard')
-#     else:
-#       messages.success(request, ("The credentials you provided cannot be determined to be authentic."))
-#       return redirect('admin_login')
-#   return render(request, 'adminlogin.html', {})
-
-# def recep_login_page(request):
-#   if request.method == "POST":
-#     username = request.POST['username']
-#     password = request.POST['password']
-#     user = authenticate(request, username=username, password=password)
-#     if user is not None:
-#       login(request, user)
-#       return redirect('main_page')
-#     else:
-#       messages.success(request, ("The credentials you provided cannot be determined to be authentic."))
-#       return redirect('recep_login')
-#   return render(request, 'receplogin.html', {})
-
-# def doctor_login_page(request):
-#   if request.method == "POST":
-#     username = request.POST['username']
-#     password = request.POST['password']
-#     user = authenticate(request, username=username, password=password)
-#     if user is not None:
-#       login(request, user)
-#       return redirect('main_page')
-#     else:
-#       messages.success(request, ("The credentials you provided cannot be determined to be authentic."))
-#       return redirect('doctor_login')
-#   return render(request, 'docorlogin.html', {})
-
-# def nurse_login_page(request):
   if request.method == "POST":
     username = request.POST['username']
     password = request.POST['password']
@@ -236,3 +182,100 @@ def admin_dashboard(request):
 @user_passes_test(is_recep)
 def recep_dashboard(request):
    return render(request, 'recep/dashboard.html')
+
+
+#################################################################################
+#                             for admin                                         #
+#################################################################################
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_patient(request):
+   patients = models.Patient.objects.all()
+   return render(request, 'adminn/patient.html', {'patients':patients})
+
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_add_patient(request):
+    if request.method == 'POST':
+        form = forms.PatientForm(request.POST)
+        if form.is_valid():
+            form.save() 
+            return redirect('admin-patient')
+        else:
+            return render(request, 'adminn/add_patient.html', {'form': form, 'error': 'Form data is invalid'})
+    
+    form = forms.PatientForm()
+    return render(request, 'adminn/add_patient.html', {'form': form})
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_delete_patient(request, patientid):
+    patient = get_object_or_404(models.Patient, patientid=patientid)
+    
+    # Handle POST request for deletion
+    if request.method == 'POST':
+        patient.delete()
+        messages.success(request, f'Patient {patient.get_name} deleted successfully.')
+        return redirect('admin-patient')  # Redirect to the patient list page
+
+    return render(request, 'adminn/delete_patient.html', {'patient': patient})
+
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_edit_patient(request, patientid):
+    patient = get_object_or_404(models.Patient, patientid=patientid)
+
+    if request.method == 'POST':
+      form = forms.PatientForm(request.POST, instance=patient)
+      if form.is_valid():
+         form.save()
+         return redirect('admin-patient')
+    form = forms.PatientForm(instance=patient)
+    return render(request, 'adminn/edit_patient.html', {'form':form, 'patient':patient})
+
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_appointment(request):
+   appointment = models.Appointment.objects.all()
+   return render(request, 'adminn/appointment.html', {'appointment':appointment})
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_delete_appointment(request, appointmentid):
+   appointment = get_object_or_404(models.Appointment, appointmentid=appointmentid)
+   if request.method == 'POST':
+      appointment.delete()
+      messages.success(request, f'Appointment {appointmentid} deleted successfully!')
+      return redirect('admin-appointment')
+   return render(request, 'adminn/delete_appointment.html', {'appointment':appointment})
+
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_edit_appointment(request, appointmentid):
+    appointment = get_object_or_404(models.Appointment, appointmentid=appointmentid)
+    if request.method == 'POST':
+      form = forms.Appointment(request.POST, instance=appointment)
+      if form.is_valid():
+         form.save()
+         return redirect('admin-appointment')
+    form = forms.Appointment(instance=appointment)
+    return render(request, 'adminn/edit_appointment.html', {'form':form,'appointment':appointment})
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_add_appointment(request):
+    if request.method == 'POST':
+      form = forms.Appointment(request.POST)
+      if form.is_valid():
+         form.save()
+         return redirect('admin-appointment')
+      else:
+         return render(request, 'adminn/add_appointment.html', {'form':form, 'error':'Form data is not valid'})
+    
+    form = forms.Appointment()
+    return render(request, 'adminn/add_appointment.html', {'form':form})

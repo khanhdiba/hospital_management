@@ -1,0 +1,20 @@
+{% extends 'adminn/base.html' %}
+
+{% block content %}
+<br><br><br><br><br>
+<div class="container">
+    <h2 class="text-center mb-4">Confirm Deletion</h2>
+    <p>Are you sure you want to delete the following patient?</p>
+    <p><strong>Name:</strong> {{ patient.get_name }}</p>
+    <p><strong>SSN:</strong> {{ patient.patientssn }}</p>
+
+    <!-- Confirmation Form -->
+    <form method="POST">
+        {% csrf_token %}
+        <p class="lead">
+        <button type="submit" class="btn btn-danger btn-lg">Delete Patient</button>
+        <a href="{% url 'admin-patient' %}" class="btn btn-secondary btn-lg">Cancel</a>
+        </p>
+    </form>
+</div>
+{% endblock %}

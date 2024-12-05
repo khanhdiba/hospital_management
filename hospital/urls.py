@@ -43,4 +43,19 @@ urlpatterns = [
     
 ]
 
-    # path('adminlogin', LoginView.as_view(template_name='hospital/adminlogin.html')),
+############################################################################
+#####################FOR ADMIN##############################################
+############################################################################
+
+urlpatterns += [
+    path('admin-patient', views.admin_patient, name='admin-patient'),
+    path('admin-add-patient', views.admin_add_patient, name='admin-add-patient'),
+    path('admin-delete-patient/<str:patientid>/', views.admin_delete_patient, name='admin-delete-patient'),
+    path('admin-edit-patient/<str:patientid>/', views.admin_edit_patient, name='admin-edit-patient'),
+
+    path('admin-appointment', views.admin_appointment, name='admin-appointment'),
+    path('admin-delete-appointment/<int:appointmentid>/', views.admin_delete_appointment, name='admin-delete-appointment'),
+    path('admin-edit-appointment/<int:appointmentid>/', views.admin_edit_appointment, name='admin-edit-appointment'),
+    path('admin-add-appointment', views.admin_add_appointment, name='admin-add-appointment'),
+
+]

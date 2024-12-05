@@ -1,0 +1,23 @@
+{% extends 'adminn/base.html' %}
+
+{% block content %}
+<br><br><br><br><br>
+<div class="container">
+    <h2 class="text-center mb-4">Confirm Deletion</h2>
+    <p>Are you sure you want to delete the following appointment?</p>
+    <p><strong>ID:</strong> {{ appointment.appointmentid }}</p>
+    <p><strong>Doctor ID:</strong> {{ appointment.doctorid }}</p>
+    <p><strong>Patient ID:</strong> {{ appointment.patientid }}</p>
+    <p><strong>Date:</strong> {{ appointment.appointmentdate }}</p>
+    <p><strong>Time:</strong> {{ appointment.appointmenttime }}</p>
+
+    <!-- Confirmation Form -->
+    <form method="POST">
+        {% csrf_token %}
+        <p class="lead">
+        <button type="submit" class="btn btn-danger btn-lg">Delete Appointment</button>
+        <a href="{% url 'admin-appointment' %}" class="btn btn-secondary btn-lg">Cancel</a>
+        </p>
+    </form>
+</div>
+{% endblock %}

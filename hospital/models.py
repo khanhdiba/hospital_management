@@ -6,7 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-
+import re
 
 class AdmittedTo(models.Model):
     patientid = models.OneToOneField('Patient', models.DO_NOTHING, db_column='patientID', primary_key=True)  # Field name made lowercase. The composite primary key (patientID, roomID) found, that is not supported. The first column is selected.
@@ -26,6 +26,7 @@ class Appointment(models.Model):
     doctorid = models.ForeignKey('Doctor', models.DO_NOTHING, db_column='doctorID', blank=True, null=True)  # Field name made lowercase.
     appointmentdate = models.DateField(db_column='appointmentDate', blank=True, null=True)  # Field name made lowercase.
     appointmenttime = models.TimeField(db_column='appointmentTime', blank=True, null=True)  # Field name made lowercase.
+    
 
     class Meta:
         managed = False
@@ -203,6 +204,9 @@ class Doctor(models.Model):
     doctorid = models.OneToOneField('MedicalStaff', models.DO_NOTHING, db_column='doctorID', primary_key=True)  # Field name made lowercase.
     license = models.CharField(max_length=12, blank=True, null=True)
 
+    def __str__(self):
+        return str(self.doctorid)
+    
     class Meta:
         managed = False
         db_table = 'doctor'
@@ -254,6 +258,9 @@ class MedicalStaff(models.Model):
     salary = models.PositiveIntegerField(blank=True, null=True)
     departmentid = models.ForeignKey(Department, models.DO_NOTHING, db_column='departmentID', blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return self.staffid
+    
     class Meta:
         managed = False
         db_table = 'medical_staff'
@@ -292,6 +299,9 @@ class Patient(models.Model):
     district = models.CharField(max_length=50, blank=True, null=True)
     city = models.CharField(max_length=50, blank=True, null=True)
 
+    def __str__(self):
+        return str(self.patientid)
+    
     class Meta:
         managed = False
         db_table = 'patient'
@@ -387,3 +397,80 @@ class Treatment(models.Model):
     class Meta:
         managed = False
         db_table = 'treatment'
+
+
+################################################################
+###                         VIEW                             ###
+################################################################
+
+class PatientView(models.Model):
+    patientID = models.IntegerField(primary_key=True)  # Assuming patientID is the primary key
+    name = models.CharField(max_length=255)
+    age = models.IntegerField()
+    contact = models.CharField(max_length=255)
+    # Add other fields from the Patient table based on your schema
+
+    class Meta:
+        managed = False  # Don't let Django manage the view
+        db_table = 'Patient_View'  # Name of the MySQL view
+
+
+class PatientsFamilyView(models.Model):
+    familyID = models.IntegerField(primary_key=True)  # Assuming familyID is the primary key
+    patientID = models.IntegerField()
+    family_member_name = models.CharField(max_length=255)
+    relationship = models.CharField(max_length=255)
+    contact = models.CharField(max_length=255)
+    # Add other fields from the Patients_Family table based on your schema
+
+    class Meta:
+        managed = False  # Don't let Django manage the view
+        db_table = 'Patients_Family_View'  # Name of the MySQL view
+
+class AppointmentView(models.Model):
+    appointmentID = models.IntegerField(primary_key=True)  # Assuming appointmentID is the primary key
+    patientID = models.IntegerField()
+    appointment_date = models.DateTimeField()
+    doctor_name = models.CharField(max_length=255)
+    status = models.CharField(max_length=255)
+    # Add other fields from the Appointment table based on your schema
+
+    class Meta:
+        managed = False  # Don't let Django manage the view
+        db_table = 'Appointment_View'  # Name of the MySQL view
+
+class MedicalRecordView(models.Model):
+    recordID = models.IntegerField(primary_key=True)  # Assuming recordID is the primary key
+    patientID = models.IntegerField()
+    diagnosis = models.TextField()
+    treatment = models.TextField()
+    doctor_name = models.CharField(max_length=255)
+    # Add other fields from the Medical_Record table based on your schema
+
+    class Meta:
+        managed = False  # Don't let Django manage the view
+        db_table = 'Medical_Record_View'  # Name of the MySQL view
+
+class PrescribesView(models.Model):
+    prescriptionID = models.IntegerField(primary_key=True)  # Assuming prescriptionID is the primary key
+    patientID = models.IntegerField()
+    medication_name = models.CharField(max_length=255)
+    dosage = models.CharField(max_length=255)
+    doctor_name = models.CharField(max_length=255)
+    # Add other fields from the Prescribes table based on your schema
+
+    class Meta:
+        managed = False  # Don't let Django manage the view
+        db_table = 'Prescribes_View'  # Name of the MySQL view
+
+class BillView(models.Model):
+    billID = models.IntegerField(primary_key=True)  # Assuming billID is the primary key
+    patientID = models.IntegerField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_status = models.CharField(max_length=255)
+    bill_date = models.DateTimeField()
+    # Add other fields from the Bill table based on your schema
+
+    class Meta:
+        managed = False  # Don't let Django manage the view
+        db_table = 'Bill_View'  # Name of the MySQL view
