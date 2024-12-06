@@ -279,3 +279,115 @@ def admin_add_appointment(request):
     
     form = forms.Appointment()
     return render(request, 'adminn/add_appointment.html', {'form':form})
+
+
+#################################################################################
+#                             for doctor                                        #
+#################################################################################
+
+
+#################################################################################
+#                             for nurse                                         #
+#################################################################################
+
+
+#################################################################################
+#                             for patient                                       #
+#################################################################################
+
+
+#################################################################################
+#                             for recep                                         #
+#################################################################################
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_admit(request):
+   patients = models.Patient.objects.all()
+   return render(request, 'recep/patient.html', {'patients':patients})
+
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_add_patient(request):
+    if request.method == 'POST':
+        form = forms.PatientForm(request.POST)
+        if form.is_valid():
+            form.save() 
+            return redirect('recep-patient')
+        else:
+            return render(request, 'recep/add_patient.html', {'form': form, 'error': 'Form data is invalid'})
+    
+    form = forms.PatientForm()
+    return render(request, 'recep/add_patient.html', {'form': form})
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_delete_patient(request, patientid):
+    patient = get_object_or_404(models.Patient, patientid=patientid)
+    
+    # Handle POST request for deletion
+    if request.method == 'POST':
+        patient.delete()
+        messages.success(request, f'Patient {patient.get_name} deleted successfully.')
+        return redirect('recep-patient')  # Redirect to the patient list page
+
+    return render(request, 'recep/delete_patient.html', {'patient': patient})
+
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_edit_patient(request, patientid):
+    patient = get_object_or_404(models.Patient, patientid=patientid)
+
+    if request.method == 'POST':
+      form = forms.PatientForm(request.POST, instance=patient)
+      if form.is_valid():
+         form.save()
+         return redirect('recep-patient')
+    form = forms.PatientForm(instance=patient)
+    return render(request, 'recep/edit_patient.html', {'form':form, 'patient':patient})
+
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_appointment(request):
+   appointment = models.Appointment.objects.all()
+   return render(request, 'recep/appointment.html', {'appointment':appointment})
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_delete_appointment(request, appointmentid):
+   appointment = get_object_or_404(models.Appointment, appointmentid=appointmentid)
+   if request.method == 'POST':
+      appointment.delete()
+      messages.success(request, f'Appointment {appointmentid} deleted successfully!')
+      return redirect('recep-appointment')
+   return render(request, 'recep/delete_appointment.html', {'appointment':appointment})
+
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_edit_appointment(request, appointmentid):
+    appointment = get_object_or_404(models.Appointment, appointmentid=appointmentid)
+    if request.method == 'POST':
+      form = forms.Appointment(request.POST, instance=appointment)
+      if form.is_valid():
+         form.save()
+         return redirect('recep-appointment')
+    form = forms.Appointment(instance=appointment)
+    return render(request, 'recep/edit_appointment.html', {'form':form,'appointment':appointment})
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_add_appointment(request):
+    if request.method == 'POST':
+      form = forms.Appointment(request.POST)
+      if form.is_valid():
+         form.save()
+         return redirect('recep-appointment')
+      else:
+         return render(request, 'recep/add_appointment.html', {'form':form, 'error':'Form data is not valid'})
+    
+    form = forms.Appointment()
+    return render(request, 'recep/add_appointment.html', {'form':form})

@@ -58,4 +58,3 @@ class Appointment(forms.ModelForm):
 
 
 
-

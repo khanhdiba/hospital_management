@@ -14,6 +14,24 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
+  <style>
+    table {
+        width: 80%;
+        border-collapse: collapse;
+        margin: 20px auto;
+    }
+    table, th, td {
+        border: 1px solid black;
+    }
+    th, td {
+        padding: 10px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+  </style>
+
   <style media="screen">
     a:link {
       text-decoration: none;
@@ -27,7 +45,7 @@
       color: white;
     }
 
-
+    
 
 
     /*---------------------------------------
@@ -278,7 +296,6 @@
   <nav class="menu" tabindex="0" style=" width:15.6%;">
     <div class="smartphone-menu-trigger"></div>
     <header class="avatar">
-      <img src="{% static "image/receppropic.png" %}" alt = 'avatar'>
       <br><br>
       <h6>Receptionist</h6>
       <h2>{{request.user.first_name}}</h2>

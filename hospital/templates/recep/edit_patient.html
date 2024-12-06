@@ -1,0 +1,145 @@
+{% extends 'recep/base.html' %}
+{% load static %}
+{% block content %}
+<head>
+    <style media="screen">
+        /* The background image */
+  .blur-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 200%;
+    background-image: url('{% static "image/about_us.jpg" %}');
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px); /* Adjust blur intensity here */
+    z-index: -1; /* Ensure it stays behind the content */
+  }
+
+  /* Content on top of the background */
+  .content {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    padding-top: 20%;
+  }
+
+  .login-form-container {
+            width: 100%;
+            max-width: 400px; /* Set max-width for responsiveness */
+            padding: 20px;
+            background-color: aliceblue;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-label {
+            font-family: 'Lucida Sans';
+        }
+
+        .btn-primary {
+            font-family: 'Lucida Sans';
+        }
+
+        .signup-link {
+            font-family: 'Lucida Sans';
+        }
+    </style>
+</head>
+
+<div class="blur-background">
+
+    <body style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f8f9fa;">
+        <br><br><br><br><br><br><br><br>    <br><br><br><br><br><br><br><br>    <br><br><br><br><br><br><br><br>
+        <div style="width: 900px; max-width: 900px; padding: 20px; background-color: aliceblue; border-radius: 8px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
+            <h2 class="text-center mb-4">Edit Patient Information</h2>
+    
+            <form method="POST">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <!-- ID -->
+                    <div class="mb-3">
+                        <label for="id" class="form-label">ID</label><br>
+                        {{ form.patientid }}
+                    </div>
+                    
+                    <!-- SSN -->
+                    <div class="mb-3">
+                        <label for="ssn" class="form-label">SSN</label><br>
+                        {{ form.patientssn }}
+                    </div>
+    
+                    <!-- First Name -->
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">First Name</label><br>
+                        {{ form.firstname }}
+                    </div>
+    
+                    <!-- Middle Name -->
+                    <div class="mb-3">
+                        <label for="middle_name" class="form-label">Middle Name</label><br>
+                        {{ form.midname }}
+                    </div>
+    
+                    <!-- Last Name -->
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Last Name</label><br>
+                        {{ form.lastname }}
+                    </div>
+    
+                    <!-- Date of Birth -->
+                    <div class="mb-3">
+                        <label for="dob" class="form-label">Date of Birth</label><br>
+                        {{ form.patientdob }}
+                    </div>
+    
+                    <!-- Gender -->
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label><br>
+                        {{ form.gender }}
+                    </div>
+    
+                    <!-- Phone Number -->
+                    <div class="mb-3">
+                        <label for="phone_number" class="form-label">Phone Number</label><br>
+                        {{ form.phonenumber }}
+                    </div>
+    
+                    <!-- Street -->
+                    <div class="mb-3">
+                        <label for="street" class="form-label">Street</label><br>
+                        {{ form.street }}
+                    </div>
+    
+                    <!-- District -->
+                    <div class="mb-3">
+                        <label for="district" class="form-label">District</label><br>
+                        {{ form.district }}
+                    </div>
+    
+                    <!-- City -->
+                    <div class="mb-3">
+                        <label for="city" class="form-label">City</label><br>
+                        {{ form.city }}
+                    </div>
+                </div>
+    
+                <!-- <div class="modal-footer">
+                    <a class="btn btn-danger btn-lg" href="/admin-patient" role="button" style="font-family: 'Lucida Sans';">Close</a>
+    
+                    <button type="submit" class="btn btn-success btn-lg">Add Patient</button>
+                </div> -->
+                <div class="modal-footer">
+                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                    <a class="btn btn-danger btn-lg" href="/recep-patient" role="button" style="font-family: 'Lucida Sans';">Close</a>
+                    <button type="submit" class="btn btn-success btn-lg">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </body>
+</div>
+
+{% endblock content %}

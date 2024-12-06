@@ -59,3 +59,36 @@ urlpatterns += [
     path('admin-add-appointment', views.admin_add_appointment, name='admin-add-appointment'),
 
 ]
+
+
+############################################################################
+#####################FOR DOCTOR#############################################
+############################################################################
+
+
+############################################################################
+#####################FOR NURSE##############################################
+############################################################################
+
+
+############################################################################
+#####################FOR PATIENT############################################
+############################################################################
+
+
+############################################################################
+#####################FOR RECEPTIONIST#######################################
+############################################################################
+
+urlpatterns += [
+    path('recep-admit', views.recep_admit, name='recep-admit'),
+    path('recep-add-patient', views.recep_add_patient, name='recep-add-patient'),
+    path('recep-delete-patient/<str:patientid>/', views.recep_delete_patient, name='recep-delete-patient'),
+    path('recep-edit-patient/<str:patientid>/', views.recep_edit_patient, name='recep-edit-patient'),
+
+    path('recep-appointment', views.recep_appointment, name='recep-appointment'),
+    path('recep-delete-appointment/<int:appointmentid>/', views.recep_delete_appointment, name='recep-delete-appointment'),
+    path('recep-edit-appointment/<int:appointmentid>/', views.recep_edit_appointment, name='recep-edit-appointment'),
+    path('recep-add-appointment', views.recep_add_appointment, name='recep-add-appointment'),
+
+]

@@ -1,0 +1,42 @@
+{% extends 'recep/base.html' %}
+
+{% block content %}
+<h1>Patient List</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Appointment ID</th>
+            <th>Doctor ID</th>
+            <th>Patient ID</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Edit Appointment</th>
+            <th>Delete Appointment</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in appointment %}
+        <tr>
+            <td>{{ a.appointmentid }}</td>
+            <td>{{ a.doctorid }}</td>
+            <td>{{ a.patientid }}</td>
+            <td>{{ a.appointmentdate }}</td>
+            <td>{{ a.appointmenttime }}</td>
+            <td>
+                <a href="{% url 'recep-edit-appointment' a.appointmentid %}" class="btn btn-success btn-sm">Edit</a>
+            </td>
+            <td>
+                <a href="{% url 'recep-delete-appointment' a.appointmentid %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this appointment?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p class="lead">
+    <a class="btn btn-success btn-lg" href="/recep-add-appointment" role="button" style="font-family: 'Lucida Sans';">Add Appointment</a>
+    <!-- <a class="btn btn-danger btn-lg" href="/admin-delete-patient" role="button" style="font-family: 'Lucida Sans';">Delete Patient</a> -->
+
+</p>
+
+
+{% endblock content %}
