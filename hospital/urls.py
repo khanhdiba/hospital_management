@@ -59,5 +59,8 @@ urlpatterns += [
     path('admin-add-appointment', views.admin_add_appointment, name='admin-add-appointment'),
 
     path('admin-doctor', views.admin_doctor, name='admin-doctor'),
-    path('admin-add-doctor', views.admin_add_doctor, name='admin-add-doctor')
+    path('admin-add-doctor', views.admin_add_doctor, name='admin-add-doctor'),
+
+    path('admin-delete-staff/<str:staffid>/', views.admin_delete_staff, name='admin-delete-staff'),
+    path('admin-edit-doctor/<str:doctorid>/', views.admin_edit_doctor, name='admin-edit-doctor'),
 ]

@@ -1,7 +1,8 @@
 {% extends 'adminn/base.html' %}
 
 {% block content %}
-<h1>Doctor List</h1>
+<br><br><br>
+<h1 style="text-align: center;">Doctor List</h1>
 <table>
     <thead>
         <tr>
@@ -14,8 +15,8 @@
             <th>Salary</th>
             <th>Department ID</th>
             <th>License</th>
-            <th>Edit Appointment</th>
-            <th>Delete Appointment</th>
+            <th>Edit Information</th>
+            <th>Delete Doctor</th>
         </tr>
     </thead>
     <tbody>
@@ -30,7 +31,12 @@
                 <td>{{ data.salary }}</td>
                 <td>{{ data.department }}</td>
                 <td>{{ data.license }}</td>
-
+                <td>
+                    <a href="{% url 'admin-edit-doctor' data.doctorid %}" class="btn btn-success btn-sm">Edit</a>
+                </td>
+                <td>
+                    <a href="{% url 'admin-delete-staff' data.doctorid %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this doctor?')">Delete</a>
+                </td>
 
             </tr>
         {% endfor %}
