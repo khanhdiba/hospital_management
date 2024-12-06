@@ -54,6 +54,16 @@ class Appointment(forms.ModelForm):
         model = models.Appointment
         fields = ['appointmentid', 'patientid', 'doctorid', 'appointmentdate', 'appointmenttime']
 
+class Doctor(forms.ModelForm):
+    class Meta:
+        model = models.Doctor
+        fields = ['doctorid', 'license']
+
+class MedicalStaff(forms.ModelForm):
+    class Meta:
+        model = models.MedicalStaff
+        fields = ['staffid', 'staffssn', 'firstname', 'midname', 'lastname', 'staffdob', 'gender', 'phonenumber', 'salary', 'departmentid']
+
 
 
 

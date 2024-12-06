@@ -1,0 +1,46 @@
+{% extends 'adminn/base.html' %}
+
+{% block content %}
+<h1>Doctor List</h1>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>SSN</th>
+            <th>Date of Birth</th>
+            <th>Gender</th>
+            <th>Phone Number</th>
+            <th>Salary</th>
+            <th>Department ID</th>
+            <th>License</th>
+            <th>Edit Appointment</th>
+            <th>Delete Appointment</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in doctor_data %}
+            <tr>
+                <td>{{ data.doctorid }}</td>
+                <td>{{ data.fullname }}</td>
+                <td>{{ data.ssn }}</td>
+                <td>{{ data.dob }}</td>
+                <td>{{ data.gender }}</td>
+                <td>{{ data.phonenumber }}</td>
+                <td>{{ data.salary }}</td>
+                <td>{{ data.department }}</td>
+                <td>{{ data.license }}</td>
+
+
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p class="lead">
+    <a class="btn btn-success btn-lg" href="/admin-add-doctor" role="button" style="font-family: 'Lucida Sans';">Add New Doctor</a>
+    <!-- <a class="btn btn-danger btn-lg" href="/admin-delete-patient" role="button" style="font-family: 'Lucida Sans';">Delete Patient</a> -->
+
+</p>
+
+
+{% endblock content %}

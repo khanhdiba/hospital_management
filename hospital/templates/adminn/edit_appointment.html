@@ -84,6 +84,11 @@
                         <label for="time" class="form-label">Time</label><br>
                         {{ form.appointmenttime }}
                     </div>
+                    {% for message in messages %}
+                        <div class="alert alert-danger" role="alert">
+                            {{message}}
+                          </div>
+                    {% endfor %}
     
        
                 </div>

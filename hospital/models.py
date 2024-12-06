@@ -150,6 +150,9 @@ class Department(models.Model):
     departmentid = models.CharField(db_column='departmentID', primary_key=True, max_length=2)  # Field name made lowercase.
     departmentname = models.CharField(db_column='departmentName', max_length=50, blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return str(self.departmentid)
+    
     class Meta:
         managed = False
         db_table = 'department'
@@ -260,6 +263,12 @@ class MedicalStaff(models.Model):
 
     def __str__(self):
         return self.staffid
+    
+    def fullname(self):
+        return f'{self.firstname} {self.midname} {self.lastname}'
+    
+    # def __str__(self):
+    #     return str(self.departmentid)
     
     class Meta:
         managed = False

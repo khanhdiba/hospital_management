@@ -125,6 +125,12 @@
                         <label for="city" class="form-label">City</label><br>
                         {{ form.city }}
                     </div>
+
+                    {% for message in messages %}
+                        <div class="alert alert-danger" role="alert">
+                            {{message}}
+                          </div>
+                    {% endfor %}
                 </div>
     
                 <!-- <div class="modal-footer">

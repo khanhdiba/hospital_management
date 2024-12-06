@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.models import Group
 from . import forms, models
 from django.contrib.auth.decorators import login_required,user_passes_test
+from django.db import transaction, IntegrityError
 
 
 
@@ -38,17 +39,7 @@ def nurse_click_page(request):
 
 def about_us(request):
   return render(request, 'aboutus.html')
-  if request.method == "POST":
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-      login(request, user)
-      return redirect('main_page')
-    else:
-      messages.success(request, ("The credentials you provided cannot be determined to be authentic."))
-      return redirect('nurse_login')
-  return render(request, 'nurselogin.html', {})
+
 
 def patient_signup_view(request):
     userForm=forms.PatientUserForm()
@@ -199,13 +190,15 @@ def admin_patient(request):
 @user_passes_test(is_admin)
 def admin_add_patient(request):
     if request.method == 'POST':
-        form = forms.PatientForm(request.POST)
-        if form.is_valid():
-            form.save() 
-            return redirect('admin-patient')
-        else:
-            return render(request, 'adminn/add_patient.html', {'form': form, 'error': 'Form data is invalid'})
-    
+        try:
+            form = forms.PatientForm(request.POST)
+            if form.is_valid():
+                form.save() 
+                return redirect('admin-patient')
+            else:
+                return render(request, 'adminn/add_patient.html', {'form': form, 'error': 'Form data is invalid'})
+        except Exception as e:
+            messages.error(request, f"An unexpected error occurred: {str(e)}")
     form = forms.PatientForm()
     return render(request, 'adminn/add_patient.html', {'form': form})
 
@@ -214,11 +207,13 @@ def admin_add_patient(request):
 def admin_delete_patient(request, patientid):
     patient = get_object_or_404(models.Patient, patientid=patientid)
     
-    # Handle POST request for deletion
     if request.method == 'POST':
-        patient.delete()
-        messages.success(request, f'Patient {patient.get_name} deleted successfully.')
-        return redirect('admin-patient')  # Redirect to the patient list page
+        try:
+            patient.delete()
+            messages.success(request, f'Patient {patient.get_name} deleted successfully.')
+            return redirect('admin-patient')  # Redirect to the patient list page
+        except Exception as e:
+            messages.error(request, f"An unexpected error occurred: {str(e)}")
 
     return render(request, 'adminn/delete_patient.html', {'patient': patient})
 
@@ -229,10 +224,14 @@ def admin_edit_patient(request, patientid):
     patient = get_object_or_404(models.Patient, patientid=patientid)
 
     if request.method == 'POST':
-      form = forms.PatientForm(request.POST, instance=patient)
-      if form.is_valid():
-         form.save()
-         return redirect('admin-patient')
+        try:
+            form = forms.PatientForm(request.POST, instance=patient)
+            if form.is_valid():
+                form.save()
+                return redirect('admin-patient')
+        except Exception as e:
+            messages.error(request, f"An unexpected error occurred: {str(e)}")
+        
     form = forms.PatientForm(instance=patient)
     return render(request, 'adminn/edit_patient.html', {'form':form, 'patient':patient})
 
@@ -248,9 +247,12 @@ def admin_appointment(request):
 def admin_delete_appointment(request, appointmentid):
    appointment = get_object_or_404(models.Appointment, appointmentid=appointmentid)
    if request.method == 'POST':
-      appointment.delete()
-      messages.success(request, f'Appointment {appointmentid} deleted successfully!')
-      return redirect('admin-appointment')
+        try:
+            appointment.delete()
+            #messages.success(request, f'Appointment {appointmentid} deleted successfully!')
+            return redirect('admin-appointment')
+        except Exception as e:
+            messages.error(request, f"An unexpected error occurred: {str(e)}")
    return render(request, 'adminn/delete_appointment.html', {'appointment':appointment})
 
 
@@ -259,10 +261,13 @@ def admin_delete_appointment(request, appointmentid):
 def admin_edit_appointment(request, appointmentid):
     appointment = get_object_or_404(models.Appointment, appointmentid=appointmentid)
     if request.method == 'POST':
-      form = forms.Appointment(request.POST, instance=appointment)
-      if form.is_valid():
-         form.save()
-         return redirect('admin-appointment')
+        try:
+            form = forms.Appointment(request.POST, instance=appointment)
+            if form.is_valid():
+               form.save()
+               return redirect('admin-appointment')
+        except Exception as e:
+            messages.error(request, f"An unexpected error occurred: {str(e)}")
     form = forms.Appointment(instance=appointment)
     return render(request, 'adminn/edit_appointment.html', {'form':form,'appointment':appointment})
 
@@ -270,12 +275,57 @@ def admin_edit_appointment(request, appointmentid):
 @user_passes_test(is_admin)
 def admin_add_appointment(request):
     if request.method == 'POST':
-      form = forms.Appointment(request.POST)
-      if form.is_valid():
-         form.save()
-         return redirect('admin-appointment')
-      else:
-         return render(request, 'adminn/add_appointment.html', {'form':form, 'error':'Form data is not valid'})
-    
+        try:
+            form = forms.Appointment(request.POST)
+            if form.is_valid():
+               form.save()
+               return redirect('admin-appointment')
+            else:
+               return render(request, 'adminn/add_appointment.html', {'form':form, 'error':'Form data is not valid'})
+        except Exception as e:
+            messages.error(request, f"An unexpected error occurred: {str(e)}")
     form = forms.Appointment()
     return render(request, 'adminn/add_appointment.html', {'form':form})
+
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_doctor(request):
+    doctors = models.Doctor.objects.select_related('doctorid')  # Pre-fetch related MedicalStaff
+    doctor_data = [
+        {
+            'doctorid': doctor.doctorid.staffid,
+            'did': doctor.doctorid,
+            'fullname': doctor.doctorid.fullname,  
+            'ssn': doctor.doctorid.staffssn, 
+            'dob':doctor.doctorid.staffdob,
+            'gender' : doctor.doctorid.gender,
+            'phonenumber': doctor.doctorid.phonenumber,
+            'salary': doctor.doctorid.salary,
+            'department': doctor.doctorid.departmentid,
+            'license': doctor.license,  
+        }
+        for doctor in doctors
+    ]
+    return render(request, 'adminn/doctor.html', {'doctor_data': doctor_data})
+
+
+@login_required(login_url='adminlogin')
+@user_passes_test(is_admin)
+def admin_add_doctor(request):
+    if request.method == 'POST':
+      try:
+        doctor_form = forms.Doctor(request.POST)
+        staff_form = forms.MedicalStaff(request.POST)
+        if doctor_form.is_valid() and staff_form.is_valid():
+           doctor_form.save()
+           staff_form.save()
+           return redirect('admin-doctor')
+        else:
+           return render(request, 'adminn/add_doctor.html', {'doctor_form':doctor_form, 'staff_form':staff_form, 'error':"Form data is invalid."})
+      except Exception as e:
+        messages.error(request, f"An unexpected error occurred: {str(e)}")
+    doctor_form = forms.Doctor()
+    staff_form = forms.MedicalStaff()
+    context = {'doctor_form':doctor_form, 'staff_form':staff_form}
+    return render(request, 'adminn/add_doctor.html', context)
