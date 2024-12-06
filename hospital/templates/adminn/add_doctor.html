@@ -55,44 +55,91 @@
     <body style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f8f9fa;">
         <br><br><br><br><br><br><br><br>    <br><br><br><br><br><br><br><br>    <br><br><br><br><br><br><br><br>
         <div style="width: 900px; max-width: 900px; padding: 20px; background-color: aliceblue; border-radius: 8px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
-            <h2 class="text-center mb-4">Add New Appointment</h2>
+            <h2 class="text-center mb-4">Add New Doctor</h2>
     
             <form method="POST">
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="id" class="form-label">ID</label><br>
-                        {{ form.appointmentid }}
+                        {{ staff_form.staffid }}
                     </div>
-                    
+
                     <div class="mb-3">
-                        <label for="id" class="form-label">Patient ID</label><br>
-                        {{ form.patientid }}
+                        <label for="ssn" class="form-label">SSN</label><br>
+                        {{ staff_form.staffssn }}
                     </div>
     
                     <div class="mb-3">
-                        <label for="id" class="form-label">Doctor ID</label><br>
-                        {{ form.doctorid }}
+                        <label for="first_name" class="form-label">First Name</label><br>
+                        {{ staff_form.firstname }}
                     </div>
     
                     <div class="mb-3">
-                        <label for="date" class="form-label">Date</label><br>
-                        {{ form.appointmentdate }}
+                        <label for="middle_name" class="form-label">Middle Name</label><br>
+                        {{ staff_form.midname }}
                     </div>
     
                     <div class="mb-3">
-                        <label for="time" class="form-label">Time</label><br>
-                        {{ form.appointmenttime }}
+                        <label for="last_name" class="form-label">Last Name</label><br>
+                        {{ staff_form.lastname }}
                     </div>
+
+                    <div class="mb-3">
+                        <label for="dob" class="form-label">Date of Birth</label><br>
+                        {{ staff_form.staffdob }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label><br>
+                        {{ staff_form.gender }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phonenumber" class="form-label">Phone Number</label><br>
+                        {{ staff_form.phonenumber }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="salary" class="form-label">Salary</label><br>
+                        {{ staff_form.salary }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Department</label><br>
+                        {{ staff_form.departmentid }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="license" class="form-label">License</label><br>
+                        {{ doctor_form.license }}
+                    </div>
+
+                    {% if error %}
+                        {{ error }}
+                    {% endif %}
+
                     {% for message in messages %}
-                        <div class="alert alert-danger" role="alert">
-                            {{message}}
-                          </div>
+                        {{ message }}
                     {% endfor %}
-    
-       
+
+
+                    {% if staff_form_errors %}
+    <ul>
+    {% for error in staff_form_errors %}
+        <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% if de_form_errors %}
+    <ul>
+    {% for error in de_form_errors %}
+        <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
                 </div>
-    
                 <!-- <div class="modal-footer">
                     <a class="btn btn-danger btn-lg" href="/admin-patient" role="button" style="font-family: 'Lucida Sans';">Close</a>
     
@@ -100,10 +147,10 @@
                 </div> -->
                 <div class="modal-footer">
                     <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-                    <a class="btn btn-danger btn-lg" href="/admin-appointment" role="button" style="font-family: 'Lucida Sans';">Close</a>
+                    <a class="btn btn-danger btn-lg" href="/admin-doctor" role="button" style="font-family: 'Lucida Sans';">Close</a>
     
                     <!-- Submit Button -->
-                    <button type="submit" class="btn btn-success btn-lg">Add Appointment</button>
+                    <button type="submit" class="btn btn-success btn-lg">Add Doctor</button>
                 </div>
             </form>
         </div>

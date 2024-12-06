@@ -9,8 +9,8 @@ from django.db import models
 import re
 
 class AdmittedTo(models.Model):
-    patientid = models.OneToOneField('Patient', models.DO_NOTHING, db_column='patientID', primary_key=True)  # Field name made lowercase. The composite primary key (patientID, roomID) found, that is not supported. The first column is selected.
-    roomid = models.ForeignKey('Room', models.DO_NOTHING, db_column='roomID')  # Field name made lowercase.
+    patientid = models.OneToOneField('Patient', models.CASCADE, db_column='patientID', primary_key=True)  # Field name made lowercase. The composite primary key (patientID, roomID) found, that is not supported. The first column is selected.
+    roomid = models.ForeignKey('Room', models.CASCADE, db_column='roomID')  # Field name made lowercase.
     admitteddate = models.DateField(db_column='admittedDate', blank=True, null=True)  # Field name made lowercase.
     dischargeddate = models.DateField(db_column='dischargedDate', blank=True, null=True)  # Field name made lowercase.
 
@@ -22,8 +22,8 @@ class AdmittedTo(models.Model):
 
 class Appointment(models.Model):
     appointmentid = models.IntegerField(db_column='appointmentID', primary_key=True)  # Field name made lowercase.
-    patientid = models.ForeignKey('Patient', models.DO_NOTHING, db_column='patientID', blank=True, null=True)  # Field name made lowercase.
-    doctorid = models.ForeignKey('Doctor', models.DO_NOTHING, db_column='doctorID', blank=True, null=True)  # Field name made lowercase.
+    patientid = models.ForeignKey('Patient', models.CASCADE, db_column='patientID', blank=True, null=True)  # Field name made lowercase.
+    doctorid = models.ForeignKey('Doctor', models.CASCADE, db_column='doctorID', blank=True, null=True)  # Field name made lowercase.
     appointmentdate = models.DateField(db_column='appointmentDate', blank=True, null=True)  # Field name made lowercase.
     appointmenttime = models.TimeField(db_column='appointmentTime', blank=True, null=True)  # Field name made lowercase.
     
@@ -34,8 +34,8 @@ class Appointment(models.Model):
 
 
 class Assists(models.Model):
-    nurseid = models.OneToOneField('Nurse', models.DO_NOTHING, db_column='nurseID', primary_key=True)  # Field name made lowercase. The composite primary key (nurseID, treatmentID) found, that is not supported. The first column is selected.
-    treatmentid = models.ForeignKey('Treatment', models.DO_NOTHING, db_column='treatmentID')  # Field name made lowercase.
+    nurseid = models.OneToOneField('Nurse', models.CASCADE, db_column='nurseID', primary_key=True)  # Field name made lowercase. The composite primary key (nurseID, treatmentID) found, that is not supported. The first column is selected.
+    treatmentid = models.ForeignKey('Treatment', models.CASCADE, db_column='treatmentID')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -53,8 +53,8 @@ class AuthGroup(models.Model):
 
 class AuthGroupPermissions(models.Model):
     id = models.BigAutoField(primary_key=True)
-    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
-    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
+    group = models.ForeignKey(AuthGroup, models.CASCADE)
+    permission = models.ForeignKey('AuthPermission', models.CASCADE)
 
     class Meta:
         managed = False
@@ -64,7 +64,7 @@ class AuthGroupPermissions(models.Model):
 
 class AuthPermission(models.Model):
     name = models.CharField(max_length=255)
-    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
+    content_type = models.ForeignKey('DjangoContentType', models.CASCADE)
     codename = models.CharField(max_length=100)
 
     class Meta:
@@ -92,8 +92,8 @@ class AuthUser(models.Model):
 
 class AuthUserGroups(models.Model):
     id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+    user = models.ForeignKey(AuthUser, models.CASCADE)
+    group = models.ForeignKey(AuthGroup, models.CASCADE)
 
     class Meta:
         managed = False
@@ -103,8 +103,8 @@ class AuthUserGroups(models.Model):
 
 class AuthUserUserPermissions(models.Model):
     id = models.BigAutoField(primary_key=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
+    user = models.ForeignKey(AuthUser, models.CASCADE)
+    permission = models.ForeignKey(AuthPermission, models.CASCADE)
 
     class Meta:
         managed = False
@@ -115,7 +115,7 @@ class AuthUserUserPermissions(models.Model):
 class Bank(models.Model):
     bankid = models.CharField(db_column='bankID', primary_key=True, max_length=3)  # Field name made lowercase.
     bankname = models.CharField(db_column='bankName', max_length=50, blank=True, null=True)  # Field name made lowercase.
-    paid = models.ForeignKey('PaymentApproach', models.DO_NOTHING, db_column='PAID')  # Field name made lowercase.
+    paid = models.ForeignKey('PaymentApproach', models.CASCADE, db_column='PAID')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -124,11 +124,11 @@ class Bank(models.Model):
 
 class Bill(models.Model):
     billid = models.IntegerField(db_column='billID', primary_key=True)  # Field name made lowercase.
-    patientid = models.ForeignKey('Patient', models.DO_NOTHING, db_column='patientID')  # Field name made lowercase.
+    patientid = models.ForeignKey('Patient', models.CASCADE, db_column='patientID')  # Field name made lowercase.
     amount = models.PositiveIntegerField(blank=True, null=True)
     createddate = models.DateField(db_column='createdDate', blank=True, null=True)  # Field name made lowercase.
     paymentstatus = models.IntegerField(db_column='paymentStatus', blank=True, null=True)  # Field name made lowercase.
-    paid = models.ForeignKey('PaymentApproach', models.DO_NOTHING, db_column='PAID', blank=True, null=True)  # Field name made lowercase.
+    paid = models.ForeignKey('PaymentApproach', models.CASCADE, db_column='PAID', blank=True, null=True)  # Field name made lowercase.
     paiddate = models.DateField(db_column='paidDate', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -139,7 +139,7 @@ class Bill(models.Model):
 class Cash(models.Model):
     cashierid = models.CharField(db_column='cashierID', primary_key=True, max_length=3)  # Field name made lowercase.
     cashiername = models.CharField(db_column='cashierName', max_length=50, blank=True, null=True)  # Field name made lowercase.
-    paid = models.ForeignKey('PaymentApproach', models.DO_NOTHING, db_column='PAID')  # Field name made lowercase.
+    paid = models.ForeignKey('PaymentApproach', models.CASCADE, db_column='PAID')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -150,6 +150,9 @@ class Department(models.Model):
     departmentid = models.CharField(db_column='departmentID', primary_key=True, max_length=2)  # Field name made lowercase.
     departmentname = models.CharField(db_column='departmentName', max_length=50, blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return str(self.departmentid)
+    
     class Meta:
         managed = False
         db_table = 'department'
@@ -161,8 +164,8 @@ class DjangoAdminLog(models.Model):
     object_repr = models.CharField(max_length=200)
     action_flag = models.PositiveSmallIntegerField()
     change_message = models.TextField()
-    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    content_type = models.ForeignKey('DjangoContentType', models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey(AuthUser, models.CASCADE)
 
     class Meta:
         managed = False
@@ -201,7 +204,7 @@ class DjangoSession(models.Model):
 
 
 class Doctor(models.Model):
-    doctorid = models.OneToOneField('MedicalStaff', models.DO_NOTHING, db_column='doctorID', primary_key=True)  # Field name made lowercase.
+    doctorid = models.OneToOneField('MedicalStaff', models.CASCADE, db_column='doctorID', primary_key=True)  # Field name made lowercase.
     license = models.CharField(max_length=12, blank=True, null=True)
 
     def __str__(self):
@@ -215,7 +218,7 @@ class Doctor(models.Model):
 class Ewallet(models.Model):
     ewalletid = models.CharField(db_column='ewalletID', primary_key=True, max_length=3)  # Field name made lowercase.
     ewalletname = models.CharField(db_column='ewalletName', max_length=50, blank=True, null=True)  # Field name made lowercase.
-    paid = models.ForeignKey('PaymentApproach', models.DO_NOTHING, db_column='PAID')  # Field name made lowercase.
+    paid = models.ForeignKey('PaymentApproach', models.CASCADE, db_column='PAID')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -223,8 +226,8 @@ class Ewallet(models.Model):
 
 
 class Manages(models.Model):
-    departmentid = models.OneToOneField(Department, models.DO_NOTHING, db_column='departmentID', primary_key=True)  # Field name made lowercase.
-    doctorid = models.OneToOneField(Doctor, models.DO_NOTHING, db_column='doctorID')  # Field name made lowercase.
+    departmentid = models.OneToOneField(Department, models.CASCADE, db_column='departmentID', primary_key=True)  # Field name made lowercase.
+    doctorid = models.OneToOneField(Doctor, models.CASCADE, db_column='doctorID')  # Field name made lowercase.
     startdate = models.DateField(db_column='startDate')  # Field name made lowercase.
 
     class Meta:
@@ -234,9 +237,9 @@ class Manages(models.Model):
 
 class MedicalRecord(models.Model):
     recordid = models.IntegerField(db_column='recordID')  # Field name made lowercase.
-    patientid = models.OneToOneField('Patient', models.DO_NOTHING, db_column='patientID', primary_key=True)  # Field name made lowercase. The composite primary key (patientID, recordID) found, that is not supported. The first column is selected.
+    patientid = models.OneToOneField('Patient', models.CASCADE, db_column='patientID', primary_key=True)  # Field name made lowercase. The composite primary key (patientID, recordID) found, that is not supported. The first column is selected.
     recorddate = models.DateField(db_column='recordDate', blank=True, null=True)  # Field name made lowercase.
-    treatmentid = models.ForeignKey('Treatment', models.DO_NOTHING, db_column='treatmentID')  # Field name made lowercase.
+    treatmentid = models.ForeignKey('Treatment', models.CASCADE, db_column='treatmentID')  # Field name made lowercase.
     diagnosis = models.CharField(max_length=1000, blank=True, null=True)
     testresult = models.CharField(db_column='testResult', max_length=1000, blank=True, null=True)  # Field name made lowercase.
 
@@ -256,10 +259,16 @@ class MedicalStaff(models.Model):
     gender = models.CharField(max_length=1, blank=True, null=True)
     phonenumber = models.CharField(db_column='phoneNumber', max_length=10, blank=True, null=True)  # Field name made lowercase.
     salary = models.PositiveIntegerField(blank=True, null=True)
-    departmentid = models.ForeignKey(Department, models.DO_NOTHING, db_column='departmentID', blank=True, null=True)  # Field name made lowercase.
+    departmentid = models.ForeignKey(Department, models.CASCADE, db_column='departmentID', blank=True, null=True)  # Field name made lowercase.
 
     def __str__(self):
         return self.staffid
+    
+    def fullname(self):
+        return f'{self.firstname} {self.midname} {self.lastname}'
+    
+    # def __str__(self):
+    #     return str(self.departmentid)
     
     class Meta:
         managed = False
@@ -270,7 +279,7 @@ class Medicine(models.Model):
     medicineid = models.CharField(db_column='medicineID', primary_key=True, max_length=11)  # Field name made lowercase.
     medicinename = models.CharField(db_column='medicineName', max_length=50, blank=True, null=True)  # Field name made lowercase.
     dosage = models.CharField(max_length=1000, blank=True, null=True)
-    pharmacyid = models.ForeignKey('Pharmacy', models.DO_NOTHING, db_column='pharmacyID')  # Field name made lowercase.
+    pharmacyid = models.ForeignKey('Pharmacy', models.CASCADE, db_column='pharmacyID')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -278,7 +287,7 @@ class Medicine(models.Model):
 
 
 class Nurse(models.Model):
-    nurseid = models.OneToOneField(MedicalStaff, models.DO_NOTHING, db_column='nurseID', primary_key=True)  # Field name made lowercase.
+    nurseid = models.OneToOneField(MedicalStaff, models.CASCADE, db_column='nurseID', primary_key=True)  # Field name made lowercase.
     yearexperience = models.IntegerField(db_column='yearExperience', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -309,7 +318,7 @@ class Patient(models.Model):
 
 class PatientsFamily(models.Model):
     familyid = models.IntegerField(db_column='familyID')  # Field name made lowercase.
-    patientid = models.OneToOneField(Patient, models.DO_NOTHING, db_column='patientID', primary_key=True)  # Field name made lowercase. The composite primary key (patientID, familyID) found, that is not supported. The first column is selected.
+    patientid = models.OneToOneField(Patient, models.CASCADE, db_column='patientID', primary_key=True)  # Field name made lowercase. The composite primary key (patientID, familyID) found, that is not supported. The first column is selected.
     relationship = models.CharField(max_length=50, blank=True, null=True)
     phonenumber = models.CharField(db_column='phoneNumber', max_length=10, blank=True, null=True)  # Field name made lowercase.
 
@@ -328,8 +337,8 @@ class PaymentApproach(models.Model):
 
 
 class Performs(models.Model):
-    doctorid = models.OneToOneField(Doctor, models.DO_NOTHING, db_column='doctorID', primary_key=True)  # Field name made lowercase. The composite primary key (doctorID, treatmentID) found, that is not supported. The first column is selected.
-    treatmentid = models.ForeignKey('Treatment', models.DO_NOTHING, db_column='treatmentID')  # Field name made lowercase.
+    doctorid = models.OneToOneField(Doctor, models.CASCADE, db_column='doctorID', primary_key=True)  # Field name made lowercase. The composite primary key (doctorID, treatmentID) found, that is not supported. The first column is selected.
+    treatmentid = models.ForeignKey('Treatment', models.CASCADE, db_column='treatmentID')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -347,9 +356,9 @@ class Pharmacy(models.Model):
 
 
 class Prescribes(models.Model):
-    medicineid = models.ForeignKey(Medicine, models.DO_NOTHING, db_column='medicineID')  # Field name made lowercase.
-    patientid = models.OneToOneField(Patient, models.DO_NOTHING, db_column='patientID', primary_key=True)  # Field name made lowercase. The composite primary key (patientID, medicineID, doctorID) found, that is not supported. The first column is selected.
-    doctorid = models.ForeignKey(Doctor, models.DO_NOTHING, db_column='doctorID')  # Field name made lowercase.
+    medicineid = models.ForeignKey(Medicine, models.CASCADE, db_column='medicineID')  # Field name made lowercase.
+    patientid = models.OneToOneField(Patient, models.CASCADE, db_column='patientID', primary_key=True)  # Field name made lowercase. The composite primary key (patientID, medicineID, doctorID) found, that is not supported. The first column is selected.
+    doctorid = models.ForeignKey(Doctor, models.CASCADE, db_column='doctorID')  # Field name made lowercase.
     prescribesdate = models.DateField(db_column='prescribesDate', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -369,7 +378,7 @@ class Room(models.Model):
 
 
 class Specialization(models.Model):
-    doctorid = models.OneToOneField(Doctor, models.DO_NOTHING, db_column='doctorID', primary_key=True)  # Field name made lowercase. The composite primary key (doctorID, aSpecialization) found, that is not supported. The first column is selected.
+    doctorid = models.OneToOneField(Doctor, models.CASCADE, db_column='doctorID', primary_key=True)  # Field name made lowercase. The composite primary key (doctorID, aSpecialization) found, that is not supported. The first column is selected.
     aspecialization = models.CharField(db_column='aSpecialization', max_length=20)  # Field name made lowercase.
 
     class Meta:
@@ -379,8 +388,8 @@ class Specialization(models.Model):
 
 
 class TakesCare(models.Model):
-    nurseid = models.OneToOneField(Nurse, models.DO_NOTHING, db_column='nurseID', primary_key=True)  # Field name made lowercase. The composite primary key (nurseID, roomID) found, that is not supported. The first column is selected.
-    roomid = models.ForeignKey(Room, models.DO_NOTHING, db_column='roomID')  # Field name made lowercase.
+    nurseid = models.OneToOneField(Nurse, models.CASCADE, db_column='nurseID', primary_key=True)  # Field name made lowercase. The composite primary key (nurseID, roomID) found, that is not supported. The first column is selected.
+    roomid = models.ForeignKey(Room, models.CASCADE, db_column='roomID')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -390,7 +399,7 @@ class TakesCare(models.Model):
 
 class Treatment(models.Model):
     treatmentid = models.IntegerField(db_column='treatmentID', primary_key=True)  # Field name made lowercase.
-    patientid = models.ForeignKey(Patient, models.DO_NOTHING, db_column='patientID')  # Field name made lowercase.
+    patientid = models.ForeignKey(Patient, models.CASCADE, db_column='patientID')  # Field name made lowercase.
     treatmentdate = models.DateField(db_column='treatmentDate', blank=True, null=True)  # Field name made lowercase.
     treatmentprocedure = models.CharField(db_column='treatmentProcedure', max_length=1000, blank=True, null=True)  # Field name made lowercase.
 

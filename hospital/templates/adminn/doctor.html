@@ -1,0 +1,52 @@
+{% extends 'adminn/base.html' %}
+
+{% block content %}
+<br><br><br>
+<h1 style="text-align: center;">Doctor List</h1>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>SSN</th>
+            <th>Date of Birth</th>
+            <th>Gender</th>
+            <th>Phone Number</th>
+            <th>Salary</th>
+            <th>Department ID</th>
+            <th>License</th>
+            <th>Edit Information</th>
+            <th>Delete Doctor</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in doctor_data %}
+            <tr>
+                <td>{{ data.doctorid }}</td>
+                <td>{{ data.fullname }}</td>
+                <td>{{ data.ssn }}</td>
+                <td>{{ data.dob }}</td>
+                <td>{{ data.gender }}</td>
+                <td>{{ data.phonenumber }}</td>
+                <td>{{ data.salary }}</td>
+                <td>{{ data.department }}</td>
+                <td>{{ data.license }}</td>
+                <td>
+                    <a href="{% url 'admin-edit-doctor' data.doctorid %}" class="btn btn-success btn-sm">Edit</a>
+                </td>
+                <td>
+                    <a href="{% url 'admin-delete-staff' data.doctorid %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this doctor?')">Delete</a>
+                </td>
+
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p class="lead">
+    <a class="btn btn-success btn-lg" href="/admin-add-doctor" role="button" style="font-family: 'Lucida Sans';">Add New Doctor</a>
+    <!-- <a class="btn btn-danger btn-lg" href="/admin-delete-patient" role="button" style="font-family: 'Lucida Sans';">Delete Patient</a> -->
+
+</p>
+
+
+{% endblock content %}

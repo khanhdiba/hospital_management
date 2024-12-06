@@ -25,7 +25,7 @@ FACULTY OF COMPUTER SCIENCE AND ENGINEERING
 <h2 align="center">Languages, Technologies and Tools</h2>
 <br/>
 <div align="center">
-    <img src="https://skillicons.dev/icons?i=mysql,python,django,bootstrap,html,css,vscode,github,git" />
+    <img src="https://skillicons.dev/icons?i=mysql,python,django,bootstrap,html,css,vscode,github,git,pycharm" />
 </div>
 
 <!-- <h2 align="center">💻 How To Run 💻</h2>
