@@ -1,0 +1,96 @@
+{% extends 'adminn/base.html' %}
+{% load static %}
+{% block content %}
+<head>
+    <style media="screen">
+        /* The background image */
+  .blur-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 200%;
+    background-image: url('{% static "image/about_us.jpg" %}');
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px); /* Adjust blur intensity here */
+    z-index: -1; /* Ensure it stays behind the content */
+  }
+
+  /* Content on top of the background */
+  .content {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    padding-top: 20%;
+  }
+
+  .login-form-container {
+            width: 100%;
+            max-width: 400px; /* Set max-width for responsiveness */
+            padding: 20px;
+            background-color: aliceblue;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-label {
+            font-family: 'Lucida Sans';
+        }
+
+        .btn-primary {
+            font-family: 'Lucida Sans';
+        }
+
+        .signup-link {
+            font-family: 'Lucida Sans';
+        }
+
+        .form-control {
+            text-align: left; /* Aligns input text to the left */
+        }
+        label {
+            text-align: left; /* Aligns labels to the left */
+            display: block; /* Ensures labels stack nicely above fields */
+            font-weight: bold; /* Makes labels stand out */
+            font-family: 'Lucida Sans';
+        }
+    </style>
+
+</head>
+
+<div class="blur-background">
+
+    <body style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f8f9fa;">
+        <br><br><br><br><br><br><br><br>    <br><br><br><br><br><br><br><br>    <br><br><br><br><br><br><br><br>
+        <div style="width: 900px; max-width: 900px; padding: 20px; background-color: aliceblue; border-radius: 8px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
+            <h1 class="text-center mb-4">Add New Patient into Room {{ roomid }}</h1>
+    
+            <form method="POST">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <!-- <h2 style="font-family: 'Lucida Sans'; text-align: center;">Medical Record</h2> -->
+                    {{ room_form.as_p }}
+
+                    {% for message in messages %}
+                        <div class="alert alert-danger" role="alert">
+                            {{message}}
+                          </div>
+                    {% endfor %}
+                </div>
+    
+                <div class="modal-footer">
+                    <!-- Close Button -->
+                    <a class="btn btn-danger btn-lg" href="/admin-room" role="button" style="font-family: 'Lucida Sans';">Close</a>
+    
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-success btn-lg">Add New Room Information</button>
+                </div>
+            </form>
+        </div>
+    </body>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,43 @@
+{% extends 'adminn/base.html' %}
+
+{% block content %}
+<br><br><br>
+<h1 style="text-align: center;font-family: 'Lucida Sans';">Patient List in Room {{ roomid }}</h1>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>SSN</th>
+            <th>Date of Birth</th>
+            <th>Phone Number</th>
+            <th>Gender</th>
+            <!-- <th>Address</th> -->
+            <th>Admitted Date</th>
+            <th>Discharged Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for patient in room_info %}
+        <tr>
+            <td>{{ patient.id }}</td>
+            <td>{{ patient.fullname }}</td>
+            <td>{{ patient.ssn }}</td>
+            <td>{{ patient.dob }}</td>
+            <td>{{ patient.phonenumber }}</td>
+            <td>{{ patient.sex }}</td>
+            <!-- <td>{{ patient.adr }}</td> -->
+            <td>{{ patient.admitted}}</td>
+            <td>{{ patient.discharged }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p class="lead">
+    <!-- <a class="btn btn-success btn-lg" href="/admin-add-patient" role="button" style="font-family: 'Lucida Sans';">Add Patient</a> -->
+    <a class="btn btn-danger btn-lg" href="/admin-room" role="button" style="font-family: 'Lucida Sans';">Back To Room List</a>
+
+</p>
+
+
+{% endblock content %}

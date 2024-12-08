@@ -6,7 +6,6 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-import re
 
 class AdmittedTo(models.Model):
     patientid = models.OneToOneField('Patient', models.CASCADE, db_column='patientID', primary_key=True)  # Field name made lowercase. The composite primary key (patientID, roomID) found, that is not supported. The first column is selected.
@@ -14,6 +13,9 @@ class AdmittedTo(models.Model):
     admitteddate = models.DateField(db_column='admittedDate', blank=True, null=True)  # Field name made lowercase.
     dischargeddate = models.DateField(db_column='dischargedDate', blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return str(self.roomid)
+    
     class Meta:
         managed = False
         db_table = 'admitted_to'
@@ -290,6 +292,8 @@ class Nurse(models.Model):
     nurseid = models.OneToOneField(MedicalStaff, models.CASCADE, db_column='nurseID', primary_key=True)  # Field name made lowercase.
     yearexperience = models.IntegerField(db_column='yearExperience', blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return str(self.nurseid)
     class Meta:
         managed = False
         db_table = 'nurse'
@@ -311,6 +315,11 @@ class Patient(models.Model):
     def __str__(self):
         return str(self.patientid)
     
+    def get_name(self):
+        return f'{self.firstname} {self.midname} {self.lastname}'
+    
+    def get_address(self):
+        return f'{self.street} {self.district} {self.city}'
     class Meta:
         managed = False
         db_table = 'patient'
@@ -372,6 +381,8 @@ class Room(models.Model):
     capacity = models.IntegerField(blank=True, null=True)
     roomtype = models.CharField(db_column='roomType', max_length=20, blank=True, null=True)  # Field name made lowercase.
 
+    def __str__(self):
+        return str(self.roomid)
     class Meta:
         managed = False
         db_table = 'room'
@@ -403,6 +414,7 @@ class Treatment(models.Model):
     treatmentdate = models.DateField(db_column='treatmentDate', blank=True, null=True)  # Field name made lowercase.
     treatmentprocedure = models.CharField(db_column='treatmentProcedure', max_length=1000, blank=True, null=True)  # Field name made lowercase.
 
+    
     class Meta:
         managed = False
         db_table = 'treatment'

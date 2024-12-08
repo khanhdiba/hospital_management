@@ -1,0 +1,50 @@
+{% extends 'adminn/base.html' %}
+
+{% block content %}
+<br><br><br>
+<h1 style="text-align: center;">Medical Records</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Record ID</th>
+            <th>Patient ID</th>
+            <th>Patient Name</th>
+            <th>Record Date</th>
+            <th>Treatment ID</th>
+            <th>Diagnosis</th>
+            <th>Result</th>
+            <th>Treatment Date</th>
+            <th>Treatment Procedure</th>
+            <th>Edit Record</th>
+            <th>Delete Record</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for m in medical_record %}
+            <tr>
+                <td>{{ m.recordid }}</td>
+                <td>{{ m.patientid }}</td>
+                <td>{{ m.fullname }}</td>
+                <td>{{ m.date1 }}</td>
+                <td>{{ m.treatmentid }}</td>
+                <td>{{ m.diagnosis }}</td>
+                <td>{{ m.result }}</td>
+                <td>{{ m.date2 }}</td>
+                <td>{{ m.procedure }}</td>
+                <td>
+                    <a href="{% url 'admin-edit-medical-record' m.recordid %}" class="btn btn-success btn-sm">Edit</a>
+                </td>
+                <td>
+                    <a href="{% url 'admin-delete-medical-record' m.recordid %}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p class="lead">
+    <a class="btn btn-success btn-lg" href="/admin-add-medical-record" role="button" style="font-family: 'Lucida Sans';">Add New Medical Record</a>
+</p>
+
+
+{% endblock content %}

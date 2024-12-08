@@ -1,0 +1,29 @@
+{% extends 'adminn/base.html' %}
+
+{% block content %}
+<br><br><br>
+<h1 style="text-align: center;">Department List</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Department ID</th>
+            <th>Department Name</th>
+            <th>Head Doctor</th>
+            <th>Period</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for d in manage_data %}
+            <tr>
+                <td>{{ d.id }}</td>
+                <td>{{ d.name }}</td>
+                <td>{{ d.headname }}</td>
+                <td>{{ d.period }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock content %}

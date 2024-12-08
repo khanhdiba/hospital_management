@@ -60,7 +60,23 @@ urlpatterns += [
 
     path('admin-doctor', views.admin_doctor, name='admin-doctor'),
     path('admin-add-doctor', views.admin_add_doctor, name='admin-add-doctor'),
-
-    path('admin-delete-staff/<str:staffid>/', views.admin_delete_staff, name='admin-delete-staff'),
+    path('admin-delete-doctor/<str:staffid>/', views.admin_delete_doctor, name='admin-delete-doctor'),
     path('admin-edit-doctor/<str:doctorid>/', views.admin_edit_doctor, name='admin-edit-doctor'),
+
+
+    path('admin-nurse', views.admin_nurse, name='admin-nurse'),
+    path('admin-add-nurse', views.admin_add_nurse, name='admin-add-nurse'),
+    path('admin-delete-nurse/<str:staffid>/', views.admin_delete_nurse, name='admin-delete-nurse'),
+    path('admin-edit-nurse/<str:nurseid>/', views.admin_edit_nurse, name='admin-edit-nurse'),
+
+    path('admin-department', views.admin_department, name='admin-department'),
+    path('admin-medical-record', views.admin_medical_record, name='admin-medical-record'),
+    path('admin-add-medical-record', views.admin_add_medical_record, name='admin-add-medical-record'),
+    path('admin-edit-medical-record/<int:recordid>/', views.admin_edit_medical_record, name='admin-edit-medical-record'),
+    path('admin-delete-medical-record/<int:recordid>/', views.admin_delete_medical_record, name='admin-delete-medical-record'),
+
+    path('admin-room', views.admin_room, name='admin-room'),
+    path('admin-add-room/<str:roomid>/', views.admin_add_room, name='admin-add-room'),
+    path('admin-show-room/<str:roomid>/', views.admin_show_room, name='admin-show-room')
+
 ]

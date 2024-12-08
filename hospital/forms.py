@@ -94,4 +94,111 @@ class Department(forms.ModelForm):
         model = models.Department
         fields = ['departmentid', 'departmentname']
 
+class Manages(forms.ModelForm):
+    class Meta:
+        model = models.Manages
+        fields = ['startdate']
 
+class Nurse(forms.ModelForm):
+    class Meta:
+        model = models.Nurse
+        fields = ['yearexperience']
+
+class MedicalRecord(forms.ModelForm):
+    recorddate= forms.DateField(
+        widget=DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
+    class Meta:
+        model = models.MedicalRecord
+        fields = ['recordid', 'patientid', 'recorddate', 'diagnosis', 'testresult']
+        labels = {
+            'recordid': 'Record ID',
+            'patientid': 'Patient ID',
+            'recorddate': 'Date of Record',
+            'diagnosis': 'Diagnosis',
+            'testresult': 'Test Results',
+        }
+        widgets = {
+            'recordid': forms.TextInput(attrs={'class': 'form-control'}),
+            'patientid': forms.TextInput(attrs={'class': 'form-control'}),
+            'diagnosis': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'testresult': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+class Treatment(forms.ModelForm):
+    treatmentdate = forms.DateField(
+        widget=DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
+    class Meta:
+        model = models.Treatment
+        fields = ['patientid','treatmentid', 'treatmentdate', 'treatmentprocedure']
+        labels = {
+            'patientid': 'Patient ID',
+            'treatmentid': 'Treatment ID',
+            'treatmentdate': 'Date of Treatment',
+            'treatmentprocedure': 'Procedure',
+        }
+        widgets = {
+            'patientid': forms.TextInput(attrs={'class': 'form-control'}),
+            'treatmentid': forms.TextInput(attrs={'class': 'form-control'}),
+            'treatmentprocedure': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
+# class Room(forms.ModelForm):
+#     class Meta:
+#         model = models.Room
+#         fields = ['roomid', 'capacity']
+#         labels = {
+#             'roomid': 'Room ID',
+#         }
+#         widgets = {
+#             'roomid':forms.ModelChoiceField(
+#                 queryset=models.Room.objects.all(),
+#                 widget=Select(attrs={'class': 'form-control'}),
+#                 required=True
+#             ),
+#             # 'roomid':forms.Select(attrs={'class': 'form-control'}),
+#         }
+
+# class TakesCare(forms.ModelForm):
+#     class Meta:
+#         model = models.TakesCare
+#         fields = ['roomid', 'nurseid']
+
+
+# class AdmittedTo(forms.ModelForm):
+#     class Meta:
+#         model = models.AdmittedTo
+#         fields = ['patientid', 'roomid', 'admitteddate', 'dischargeddate']
+
+class AddRoom(forms.Form):
+    # ROOM_CHOICES = [(str(i), str(i)) for i in range(101, 111)]
+    # roomid = forms.ChoiceField(
+    #     choices=ROOM_CHOICES,
+    #     widget=forms.Select(attrs={'class':'form-control'}),
+    #     label='Room ID',
+    #     required=True,
+    # )
+
+    patientid = forms.ModelChoiceField(
+        queryset=models.Patient.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label='Patient ID'
+    )
+
+    nurseid = forms.ModelChoiceField(
+        queryset=models.Nurse.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label='Nurse ID'
+    )
+
+    admitted = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        label='Admitted Date'
+    )
+
+    discharged = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        label='Discharged Date'
+    )
+    # class Meta:
+    #     fields = ['roomid', 'patientid', 'nurseid', 'admitted', 'discharged']
