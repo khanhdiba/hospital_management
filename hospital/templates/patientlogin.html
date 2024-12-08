@@ -55,11 +55,11 @@
     <div style="width: 100%; padding: 20px; background-color:aliceblue; border-radius: 8px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
     <!-- <div class="login-form-container"> -->
         <h1 style="font-family: 'Lucida Sans'; margin-bottom: 20px; text-align: center;">Patient Login Page</h1>
-        <h5 style="font-family: 'Lucida Sans';">Enter your username and password</h5>
+        <h5 style="font-family: 'Lucida Sans';">Enter your ID and password</h5>
         <form method="POST">
             {% csrf_token %}
             <div class="mb-3">
-                <label for="username" class="form-label" style="font-family: 'Lucida Sans';">Username</label>
+                <label for="Patient ID" class="form-label" style="font-family: 'Lucida Sans';">Patient ID</label>
                 <!-- <input type="text" class="form-control" name="username" style="font-family: 'Lucida Sans';" placeholder="Username"> -->
                 {% render_field form.username class="form-control" placeholder="Username" %}
             </div>

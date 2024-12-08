@@ -1,0 +1,35 @@
+{% extends 'patient/base.html' %}
+
+{% block content %}
+<br><br><br>
+<h1 style="text-align: center;">Doctor List</h1>
+
+<table class="table table-bordered table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Full Name</th>
+            <th scope="col">Date of Birth</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">Department</th>
+            <th scope="col">License</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in doctor_data %}
+            <tr>
+                <td>{{ data.doctorid }}</td>
+                <td>{{ data.fullname }}</td>
+                <td>{{ data.dob }}</td>
+                <td>{{ data.gender }}</td>
+                <td>{{ data.phonenumber }}</td>
+                <td>{{ data.department }}</td>
+                <td>{{ data.license }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock content %}

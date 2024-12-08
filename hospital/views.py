@@ -839,3 +839,322 @@ def admin_show_room(request, roomid):
         }for row in rows
     ]
     return render(request, 'adminn/show_room.html', {'room_info':room_info, 'roomid':roomid})
+
+
+
+
+
+
+
+#################################################################################
+#                             for recep                                         #
+#################################################################################
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_admit(request):
+   patients = models.Patient.objects.all()
+   return render(request, 'recep/patient.html', {'patients':patients})
+
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_add_patient(request):
+    if request.method == 'POST':
+        form = forms.PatientForm(request.POST)
+        if form.is_valid():
+            form.save() 
+            return redirect('recep-patient')
+        else:
+            return render(request, 'recep/add_patient.html', {'form': form, 'error': 'Form data is invalid'})
+    
+    form = forms.PatientForm()
+    return render(request, 'recep/add_patient.html', {'form': form})
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_delete_patient(request, patientid):
+    patient = get_object_or_404(models.Patient, patientid=patientid)
+    
+    # Handle POST request for deletion
+    if request.method == 'POST':
+        patient.delete()
+        messages.success(request, f'Patient {patient.get_name} deleted successfully.')
+        return redirect('recep-patient')  # Redirect to the patient list page
+
+    return render(request, 'recep/delete_patient.html', {'patient': patient})
+
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_edit_patient(request, patientid):
+    patient = get_object_or_404(models.Patient, patientid=patientid)
+
+    if request.method == 'POST':
+      form = forms.PatientForm(request.POST, instance=patient)
+      if form.is_valid():
+         form.save()
+         return redirect('recep-patient')
+    form = forms.PatientForm(instance=patient)
+    return render(request, 'recep/edit_patient.html', {'form':form, 'patient':patient})
+
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_appointment(request):
+   appointment = models.Appointment.objects.all()
+   return render(request, 'recep/appointment.html', {'appointment':appointment})
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_delete_appointment(request, appointmentid):
+   appointment = get_object_or_404(models.Appointment, appointmentid=appointmentid)
+   if request.method == 'POST':
+      appointment.delete()
+      messages.success(request, f'Appointment {appointmentid} deleted successfully!')
+      return redirect('recep-appointment')
+   return render(request, 'recep/delete_appointment.html', {'appointment':appointment})
+
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_edit_appointment(request, appointmentid):
+    appointment = get_object_or_404(models.Appointment, appointmentid=appointmentid)
+    if request.method == 'POST':
+      form = forms.Appointment(request.POST, instance=appointment)
+      if form.is_valid():
+         form.save()
+         return redirect('recep-appointment')
+    form = forms.Appointment(instance=appointment)
+    return render(request, 'recep/edit_appointment.html', {'form':form,'appointment':appointment})
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_add_appointment(request):
+    if request.method == 'POST':
+      form = forms.Appointment(request.POST)
+      if form.is_valid():
+         form.save()
+         return redirect('recep-appointment')
+      else:
+         return render(request, 'recep/add_appointment.html', {'form':form, 'error':'Form data is not valid'})
+    
+    form = forms.Appointment()
+    return render(request, 'recep/add_appointment.html', {'form':form})
+
+
+
+#################################################################################
+#                             for patient                                       #
+#################################################################################
+# @login_required(login_url='patientlogin')
+# @user_passes_test(is_patient)
+# def register(request):
+#     if request.method == 'POST':
+#         form = forms.PatientForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Register information successfully')
+#             return redirect('patient-register')
+#         else:
+#             return render(request, {'form':form, 'error':'Data is not valid'})
+#     form = forms.PatientForm()
+#     return render(request, 'patient/register.html',{'form':form})
+
+
+# @login_required(login_url='patientlogin')
+# @user_passes_test(is_patient)
+# def patient_info(request):
+#     q = """
+#             select * from patient where patientid = %s
+#         """
+    
+#     with connection.cursor() as cursor:
+#         cursor.execute(q, [request.user.username])
+#         rows = cursor.fetchall()
+
+#     patient = [
+#         {
+#             'id':row[0],
+#             'ssn':row[1],
+#             'firstname':row[2],
+#             'midname':row[3],
+#             'lastname':row[4],
+#             'dob':row[5],
+#             'gender':row[6],
+#             'phonenumber':row[7],
+#             'street':row[8],
+#             'district':row[9],
+#             'city':row[10],
+#         } for row in rows
+#     ]
+
+#     return render(request, 'patient/info.html', {'form':patient})
+
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
+def patient_info(request):
+    patient = get_object_or_404(models.Patient, patientid=request.user.username)
+    return render(request, 'patient/info.html', {'form': patient})
+
+
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
+def patient_health(request):
+    record = models.MedicalRecord.objects.filter(patientid=request.user.username)
+    treatment = models.Treatment.objects.filter(patientid=request.user.username)
+    return render(request, 'patient/health.html', {'records':record, 'treatments':treatment})
+
+
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
+def patient_appointment(request):
+    appointment = models.Appointment.objects.filter(patientid=request.user.username)
+    return render(request, 'patient/appointment.html', {'appointment':appointment})
+
+
+
+# @login_required(login_url='patientlogin')
+# @user_passes_test(is_patient)
+# def patient_add_appointment(request):
+#     if request.method == 'POST':
+#         try:
+#             form = forms.PatientAppointment(request.POST)
+#             if form.is_valid():
+#                patientid = request.user.username
+#                doctorid = form.cleaned_data['doctorid']
+#                date = form.cleaned_data['date']
+#                time = form.cleaned_data['time']
+#                q = """
+#                     select max(appointmentid) + 1 AS APID from appointment;
+#                     INSERT INTO APPOINTMENT (appointmentid, patientid, doctorid, appointmentdate, appointmenttime)
+#                     VALUES (APID, %s, %s, %s, %s)
+#                     """
+#                with connection.cursor() as cursor:
+#                     cursor.execute(q, [request.user.username])
+#                     rows = cursor.fetchall()
+#                return redirect('patient-appointment')
+#             else:
+#                return render(request, 'patient/add_appointment.html', {'form':form, 'error':'Form data is not valid'})
+#         except Exception as e:
+#             messages.error(request, f"An unexpected error occurred: {str(e)}")
+#     form = forms.Appointment()
+#     return render(request, 'patient/add_appointment.html', {'form':form})
+
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
+def patient_add_appointment(request):
+    if request.method == 'POST':
+        try:
+            form = forms.PatientAppointment(request.POST)
+            if form.is_valid():
+                patientid = request.user.username
+                doctorid = form.cleaned_data['doctorid']
+                date = form.cleaned_data['date']
+                time = form.cleaned_data['time']
+
+                # Fetch the next appointment ID
+                with connection.cursor() as cursor:
+                    cursor.execute("SELECT COALESCE(MAX(appointmentid), 0) + 1 FROM appointment")
+                    next_appointment_id = cursor.fetchone()[0]
+
+                # Insert the new appointment
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        INSERT INTO appointment (appointmentid, patientid, doctorid, appointmentdate, appointmenttime)
+                        VALUES (%s, %s, %s, %s, %s)
+                        """,
+                        [next_appointment_id, patientid, doctorid, date, time]
+                    )
+
+                # messages.success(request, "Appointment added successfully!")
+                return redirect('patient-appointment')
+            else:
+                return render(request, 'patient/add_appointment.html', {'form': form, 'error': 'Form data is not valid'})
+        except Exception as e:
+            messages.error(request, f"An unexpected error occurred: {str(e)}")
+    else:
+        form = forms.PatientAppointment()
+    return render(request, 'patient/add_appointment.html', {'form': form})
+
+
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
+def patient_room(request):
+    rooms = models.AdmittedTo.objects.filter(patientid=request.user.username)
+    return render(request, 'patient/room.html', {'rooms':rooms})
+
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
+def patient_doctor(request):
+    doctors = models.Doctor.objects.select_related('doctorid')  # Pre-fetch related MedicalStaff
+    doctor_data = [
+        {
+            'doctorid': doctor.doctorid.staffid,
+            'fullname': doctor.doctorid.fullname,  
+            'dob':doctor.doctorid.staffdob,
+            'gender' : doctor.doctorid.gender,
+            'phonenumber': doctor.doctorid.phonenumber,
+            'department': doctor.doctorid.departmentid,
+            'license': doctor.license,  
+        }
+        for doctor in doctors
+    ]
+    return render(request, 'patient/doctor.html', {'doctor_data': doctor_data})
+
+
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
+def patient_nurse(request):
+    nurses = models.Nurse.objects.select_related('nurseid')  # Pre-fetch related MedicalStaff
+    nurse_data = [
+        {
+            'nurseid': nurse.nurseid.staffid,
+            'fullname': nurse.nurseid.fullname,  
+            'dob':nurse.nurseid.staffdob,
+            'gender' : nurse.nurseid.gender,
+            'phonenumber': nurse.nurseid.phonenumber,
+            'department': nurse.nurseid.departmentid,
+            'yearexperience': nurse.yearexperience,  
+        }
+        for nurse in nurses
+    ]
+    return render(request, 'patient/nurse.html', {'nurse_data': nurse_data})
+
+@login_required(login_url='patientlogin')
+@user_passes_test(is_patient)
+def patient_department(request):
+    q = """
+            SELECT 
+                d.departmentid,
+                d.departmentname,
+                CONCAT(ms.firstname, ' ', ms.midname, ' ', ms.lastname),
+                CONCAT(m.startdate, ' - Present')
+            FROM manages m
+            JOIN department d ON m.departmentid = d.departmentid
+            JOIN medical_staff ms ON doctorid = staffid;
+            """
+    with connection.cursor() as cursor:
+        cursor.execute(q)
+        rows = cursor.fetchall()
+    manage_data = [
+    {
+        'id': row[0],
+        'name': row[1],
+        'headname': row[2],
+        'period': row[3]
+    }
+    for row in rows
+    ]
+    return render(request, 'patient/department.html', {'manage_data':manage_data})
+#################################################################################
+#                             for doctor                                        #
+#################################################################################
+
+
+#################################################################################
+#                             for nurse                                         #
+#################################################################################
+
+

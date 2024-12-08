@@ -279,18 +279,21 @@
   <nav class="menu" tabindex="0" style=" width:15.6%;">
     <div class="smartphone-menu-trigger"></div>
     <header class="avatar">
-      <img src="{% static "image/adminpropic.png" %}" alt = 'avatar'>
+      <!-- <img src="{% static "image/adminpropic.png" %}" alt = 'avatar'> -->
       <br><br>
       <h6>Patient</h6>
       <h2>{{request.user.first_name}}</h2>
     </header>
     <ul>
       <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/patient-dashboard"><span>Dashboard</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/patient-info"><span>Information</span></a> </li>
       <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/patient-health"><span>Health Information</span></a> </li>
       <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/patient-appointment"><span>Appointment</span></a> </li>
-      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/patient-presciption"><span>Presciptions</span></a> </li>
-      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/patient-family"><span>Family Information</span></a> </li>
-      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/patient-bill"><span>Receipt and Bill</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/patient-room"><span>Room</span></a> </li>
+      <!-- <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/patient-presciption"><span>Presciptions</span></a> </li> -->
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/patient-doctor"><span>Doctor List</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/patient-nurse"><span>Nurse List</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/patient-department"><span>Department List</span></a> </li>
 
       <!-- <li tabindex="0" class="icon-customers"> <a style="color:white; text-decoration:none;" href="/admin-doctor"><span>Doctor</span></a></li>
       <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/admin-patient"><span>Patient</span></a></li>

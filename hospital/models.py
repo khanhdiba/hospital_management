@@ -153,7 +153,7 @@ class Department(models.Model):
     departmentname = models.CharField(db_column='departmentName', max_length=50, blank=True, null=True)  # Field name made lowercase.
 
     def __str__(self):
-        return str(self.departmentid)
+        return str(self.departmentname)
     
     class Meta:
         managed = False

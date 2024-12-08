@@ -41,17 +41,39 @@ class NurseUserForm(forms.ModelForm):
 class PatientUserForm(forms.ModelForm):
     class Meta:
         model=User
-        fields=['first_name','last_name','username','password']
+        fields=['username','password']
         widgets = {
-        'password': forms.PasswordInput()
+        'password': forms.PasswordInput(),
         }
 class PatientForm(forms.ModelForm):
-  class Meta:
+    patientdob = forms.DateField(
+        widget=DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
+
+    GENDER_CHOICES = [
+        ('F', 'Female'),
+        ('M', 'Male'),
+    ]
+    
+    gender = forms.ChoiceField(
+        choices=GENDER_CHOICES,
+        widget=Select(attrs={'class': 'form-control'}),
+        required=True,  # Set to False if gender is optional
+    )
+
+    class Meta:
         model = models.Patient
         fields = ['patientid', 'patientssn', 'firstname', 'midname', 'lastname', 'patientdob', 'gender', 'phonenumber', 'street', 'district', 'city']
 
 
 class Appointment(forms.ModelForm):
+    appointmentdate = forms.DateField(
+        widget=DateInput(attrs={'type': 'date', 'class': 'form-control'})
+    )
+    appointmenttime = forms.TimeField(
+        widget=DateInput(attrs={'type': 'time', 'class': 'form-control'})
+    )
+
     class Meta:
         model = models.Appointment
         fields = ['appointmentid', 'patientid', 'doctorid', 'appointmentdate', 'appointmenttime']
@@ -202,3 +224,22 @@ class AddRoom(forms.Form):
     )
     # class Meta:
     #     fields = ['roomid', 'patientid', 'nurseid', 'admitted', 'discharged']
+
+class PatientAppointment(forms.Form):
+
+    doctorid = forms.ModelChoiceField(
+        queryset=models.Doctor.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label='Doctor ID'
+    )
+
+    date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+        label='Appointment Date'
+    )
+
+    time = forms.TimeField(
+        widget=forms.TimeInput(attrs={'type' : 'time', 'class' : 'form-control'}),
+        label='Appointment Time'
+    )
+
