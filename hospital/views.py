@@ -736,15 +736,6 @@ def admin_delete_medical_record(request, recordid):
 @login_required(login_url='adminlogin')
 @user_passes_test(is_admin)
 def admin_room(request):
-    # q = """
-    #     select r.roomid, capacity, roomtype, tk.nurseid, concat(ms.firstname, ' ', ms.midname, ' ', ms.lastname),
-    #             at.patientid, concat(p.firstname, ' ', p.midname, ' ', p.lastname), at.admitteddate, at.dischargeddate
-    #     from room r
-    #     join takes_care tk on r.roomid = tk.roomid
-    #     join admitted_to at on r.roomid = at.roomid
-    #     join medical_staff ms on ms.staffid = tk.nurseid
-    #     join patient p on p.patientid = at.patientid
-    #     """
     q = """
             select roomid, capacity, roomtype, GetPatientCountAtRoom(roomid)
             from room
@@ -758,12 +749,6 @@ def admin_room(request):
             'roomid':row[0],
             'capacity':row[1],
             'type':row[2],
-            # 'nurseid':row[3],
-            # 'nursename':row[4],
-            # 'patientid':row[5],
-            # 'patientname':row[6],
-            # 'admitted':row[7],
-            # 'discharged':row[8]
             'count':row[3]
         }for row in rows
     ]
@@ -852,7 +837,7 @@ def admin_show_room(request, roomid):
 
 @login_required(login_url='receplogin')
 @user_passes_test(is_recep)
-def recep_admit(request):
+def recep_patient(request):
    patients = models.Patient.objects.all()
    return render(request, 'recep/patient.html', {'patients':patients})
 
@@ -943,53 +928,160 @@ def recep_add_appointment(request):
     return render(request, 'recep/add_appointment.html', {'form':form})
 
 
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_doctor(request):
+    doctors = models.Doctor.objects.select_related('doctorid')  # Pre-fetch related MedicalStaff
+    doctor_data = [
+        {
+            'doctorid': doctor.doctorid.staffid,
+            'fullname': doctor.doctorid.fullname,  
+            'dob':doctor.doctorid.staffdob,
+            'gender' : doctor.doctorid.gender,
+            'phonenumber': doctor.doctorid.phonenumber,
+            'department': doctor.doctorid.departmentid,
+            'license': doctor.license,  
+        }
+        for doctor in doctors
+    ]
+    return render(request, 'recep/doctor.html', {'doctor_data': doctor_data})
 
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_nurse(request):
+    nurses = models.Nurse.objects.select_related('nurseid')  # Pre-fetch related MedicalStaff
+    nurse_data = [
+        {
+            'nurseid': nurse.nurseid.staffid,
+            'fullname': nurse.nurseid.fullname,  
+            'dob':nurse.nurseid.staffdob,
+            'gender' : nurse.nurseid.gender,
+            'phonenumber': nurse.nurseid.phonenumber,
+            'department': nurse.nurseid.departmentid,
+            'yearexperience': nurse.yearexperience,  
+        }
+        for nurse in nurses
+    ]
+    return render(request, 'recep/nurse.html', {'nurse_data': nurse_data})
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_department(request):
+    q = """
+            SELECT 
+                d.departmentid,
+                d.departmentname,
+                CONCAT(ms.firstname, ' ', ms.midname, ' ', ms.lastname),
+                CONCAT(m.startdate, ' - Present')
+            FROM manages m
+            JOIN department d ON m.departmentid = d.departmentid
+            JOIN medical_staff ms ON doctorid = staffid;
+            """
+    with connection.cursor() as cursor:
+        cursor.execute(q)
+        rows = cursor.fetchall()
+    manage_data = [
+    {
+        'id': row[0],
+        'name': row[1],
+        'headname': row[2],
+        'period': row[3]
+    }
+    for row in rows
+    ]
+    return render(request, 'recep/department.html', {'manage_data':manage_data})
+
+
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_room(request):
+    q = """
+            select roomid, capacity, roomtype, GetPatientCountAtRoom(roomid)
+            from room
+        """
+    with connection.cursor() as cursor:
+        cursor.execute(q)
+        rows = cursor.fetchall()
+
+    room_data=[
+        {
+            'roomid':row[0],
+            'capacity':row[1],
+            'type':row[2],
+            'count':row[3]
+        }for row in rows
+    ]
+    return render(request, 'recep/room.html' ,{'rooms':room_data})
+
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_add_room(request, roomid):
+    if request.method == 'POST':
+        room_form = forms.AddRoom(request.POST)
+        if room_form.is_valid():
+            try: 
+                patientid = room_form.cleaned_data['patientid']
+                nurseid = room_form.cleaned_data['nurseid']
+                admitted = room_form.cleaned_data['admitted']
+                discharged = room_form.cleaned_data['discharged']
+
+                q = """
+                    INSERT INTO admitted_to (patientid, roomid, admitteddate, dischargeddate)
+                    VALUES (%s, %s, %s, %s);
+                    
+                    INSERT INTO takes_care (nurseid, roomid)
+                    VALUES (%s, %s);
+                """
+
+                with connection.cursor() as cursor:
+                    # Executing the query with parameterized values
+                    cursor.execute(q, [patientid, roomid, admitted, discharged, nurseid, roomid])
+
+                return redirect('recep-room')
+            except Exception as e:
+                messages.error(request, f'An unexpected error occurred: {str(e)}')
+        else:
+            return render(request, 'recep/add_room.html', {'error':'Form is invalid'})
+    
+    room_form = forms.AddRoom()
+    return render(request, 'recep/add_room.html', {'room_form':room_form, 'roomid':roomid})
+
+
+@login_required(login_url='receplogin')
+@user_passes_test(is_recep)
+def recep_show_room(request, roomid):
+    q = """
+            select p.patientid, concat(p.firstname, ' ', p.midname, ' ', p.lastname), 
+            p.patientssn, p.patientdob, p.phonenumber, p.gender, concat(p.street, ' ', p.district, ' ', p.city),
+            admitteddate, dischargeddate
+            from patient p
+            join admitted_to at on p.patientid = at.patientid
+            where admitteddate <= now() and (dischargedDate > NOW() OR dischargedDate IS NULL) and at.roomid = %s
+        """
+    with connection.cursor() as cursor:
+        cursor.execute(q, [roomid])
+        rows = cursor.fetchall()
+    room_info = [
+        {
+            'id':row[0],
+            'fullname':row[1],
+            'ssn':row[2],
+            'dob':row[3],
+            'phonenumber':row[4],
+            'sex':row[5],
+            'adr':row[6],
+            'admitted':row[7],
+            'discharged':row[8],
+        }for row in rows
+    ]
+    return render(request, 'recep/show_room.html', {'room_info':room_info, 'roomid':roomid})
 #################################################################################
 #                             for patient                                       #
 #################################################################################
-# @login_required(login_url='patientlogin')
-# @user_passes_test(is_patient)
-# def register(request):
-#     if request.method == 'POST':
-#         form = forms.PatientForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, 'Register information successfully')
-#             return redirect('patient-register')
-#         else:
-#             return render(request, {'form':form, 'error':'Data is not valid'})
-#     form = forms.PatientForm()
-#     return render(request, 'patient/register.html',{'form':form})
 
-
-# @login_required(login_url='patientlogin')
-# @user_passes_test(is_patient)
-# def patient_info(request):
-#     q = """
-#             select * from patient where patientid = %s
-#         """
-    
-#     with connection.cursor() as cursor:
-#         cursor.execute(q, [request.user.username])
-#         rows = cursor.fetchall()
-
-#     patient = [
-#         {
-#             'id':row[0],
-#             'ssn':row[1],
-#             'firstname':row[2],
-#             'midname':row[3],
-#             'lastname':row[4],
-#             'dob':row[5],
-#             'gender':row[6],
-#             'phonenumber':row[7],
-#             'street':row[8],
-#             'district':row[9],
-#             'city':row[10],
-#         } for row in rows
-#     ]
-
-#     return render(request, 'patient/info.html', {'form':patient})
 
 @login_required(login_url='patientlogin')
 @user_passes_test(is_patient)
@@ -1012,34 +1104,6 @@ def patient_appointment(request):
     appointment = models.Appointment.objects.filter(patientid=request.user.username)
     return render(request, 'patient/appointment.html', {'appointment':appointment})
 
-
-
-# @login_required(login_url='patientlogin')
-# @user_passes_test(is_patient)
-# def patient_add_appointment(request):
-#     if request.method == 'POST':
-#         try:
-#             form = forms.PatientAppointment(request.POST)
-#             if form.is_valid():
-#                patientid = request.user.username
-#                doctorid = form.cleaned_data['doctorid']
-#                date = form.cleaned_data['date']
-#                time = form.cleaned_data['time']
-#                q = """
-#                     select max(appointmentid) + 1 AS APID from appointment;
-#                     INSERT INTO APPOINTMENT (appointmentid, patientid, doctorid, appointmentdate, appointmenttime)
-#                     VALUES (APID, %s, %s, %s, %s)
-#                     """
-#                with connection.cursor() as cursor:
-#                     cursor.execute(q, [request.user.username])
-#                     rows = cursor.fetchall()
-#                return redirect('patient-appointment')
-#             else:
-#                return render(request, 'patient/add_appointment.html', {'form':form, 'error':'Form data is not valid'})
-#         except Exception as e:
-#             messages.error(request, f"An unexpected error occurred: {str(e)}")
-#     form = forms.Appointment()
-#     return render(request, 'patient/add_appointment.html', {'form':form})
 
 @login_required(login_url='patientlogin')
 @user_passes_test(is_patient)
@@ -1151,10 +1215,484 @@ def patient_department(request):
 #################################################################################
 #                             for doctor                                        #
 #################################################################################
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_info(request):
+    doctor = get_object_or_404(models.MedicalStaff, staffid=request.user.username)
+    return render(request, 'doctor/info.html', {'form':doctor})
+
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_doctor(request):
+    doctors = models.Doctor.objects.select_related('doctorid')  # Pre-fetch related MedicalStaff
+    doctor_data = [
+        {
+            'doctorid': doctor.doctorid.staffid,
+            'fullname': doctor.doctorid.fullname,  
+            'dob':doctor.doctorid.staffdob,
+            'gender' : doctor.doctorid.gender,
+            'phonenumber': doctor.doctorid.phonenumber,
+            'department': doctor.doctorid.departmentid,
+            'license': doctor.license,  
+        }
+        for doctor in doctors
+    ]
+    return render(request, 'doctor/doctor.html', {'doctor_data': doctor_data})
+
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_patient(request):
+   patients = models.Patient.objects.all()
+   return render(request, 'doctor/patient.html', {'patients':patients})
 
 
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_nurse(request):
+    nurses = models.Nurse.objects.select_related('nurseid')  # Pre-fetch related MedicalStaff
+    nurse_data = [
+        {
+            'nurseid': nurse.nurseid.staffid,
+            'fullname': nurse.nurseid.fullname,  
+            'dob':nurse.nurseid.staffdob,
+            'gender' : nurse.nurseid.gender,
+            'phonenumber': nurse.nurseid.phonenumber,
+            'department': nurse.nurseid.departmentid,
+            'yearexperience': nurse.yearexperience,  
+        }
+        for nurse in nurses
+    ]
+    return render(request, 'doctor/nurse.html', {'nurse_data': nurse_data})
+
+
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_department(request):
+    q = """
+            SELECT 
+                d.departmentid,
+                d.departmentname,
+                CONCAT(ms.firstname, ' ', ms.midname, ' ', ms.lastname),
+                CONCAT(m.startdate, ' - Present')
+            FROM manages m
+            JOIN department d ON m.departmentid = d.departmentid
+            JOIN medical_staff ms ON doctorid = staffid;
+            """
+    with connection.cursor() as cursor:
+        cursor.execute(q)
+        rows = cursor.fetchall()
+    manage_data = [
+    {
+        'id': row[0],
+        'name': row[1],
+        'headname': row[2],
+        'period': row[3]
+    }
+    for row in rows
+    ]
+    return render(request, 'doctor/department.html', {'manage_data':manage_data})
+
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_room(request):
+    q = """
+            select roomid, capacity, roomtype, GetPatientCountAtRoom(roomid)
+            from room
+        """
+    with connection.cursor() as cursor:
+        cursor.execute(q)
+        rows = cursor.fetchall()
+
+    room_data=[
+        {
+            'roomid':row[0],
+            'capacity':row[1],
+            'type':row[2],
+            'count':row[3]
+        }for row in rows
+    ]
+    return render(request, 'doctor/room.html' ,{'rooms':room_data})
+
+
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_show_room(request, roomid):
+    q = """
+            select p.patientid, concat(p.firstname, ' ', p.midname, ' ', p.lastname), 
+            p.patientssn, p.patientdob, p.phonenumber, p.gender, concat(p.street, ' ', p.district, ' ', p.city),
+            admitteddate, dischargeddate
+            from patient p
+            join admitted_to at on p.patientid = at.patientid
+            where admitteddate <= now() and (dischargedDate > NOW() OR dischargedDate IS NULL) and at.roomid = %s
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(q, [roomid])
+        rows = cursor.fetchall()
+    room_info = [
+        {
+            'id':row[0],
+            'fullname':row[1],
+            'ssn':row[2],
+            'dob':row[3],
+            'phonenumber':row[4],
+            'sex':row[5],
+            'adr':row[6],
+            'admitted':row[7],
+            'discharged':row[8],
+        }for row in rows
+    ]
+    return render(request, 'doctor/show_room.html', {'room_info':room_info, 'roomid':roomid})
+
+
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_medical_record(request):
+    q = """
+        select recordid, m.patientid, CONCAT(p.firstname, ' ', p.midname, ' ', p.lastname), recorddate, m.treatmentid, diagnosis, testresult,
+        t.treatmentdate, t.treatmentprocedure
+        from medical_record m
+        join patient p
+        on m.patientid = p.patientid
+        join treatment t on m.treatmentid = t.treatmentid
+        """
+    with connection.cursor() as cursor:
+        cursor.execute(q)
+        rows = cursor.fetchall()
+
+    medical_record = [
+        {
+            'recordid':row[0],
+            'patientid':row[1],
+            'fullname':row[2],
+            'date1':row[3],
+            'treatmentid':row[4],
+            'diagnosis':row[5],
+            'result':row[6],
+            'date2':row[7],
+            'procedure':row[8]
+        }for row in rows
+    ]
+
+    return render(request, 'doctor/medical_record.html', {'medical_record':medical_record})
+
+
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_add_medical_record(request):
+    if request.method == 'POST':
+        try:
+            med_form = forms.MedicalRecord(request.POST)
+            treat_form = forms.Treatment(request.POST)
+            if med_form.is_valid() and treat_form.is_valid():
+                treat_instance = treat_form.save()
+                med_instance = med_form.save(commit=False)
+                med_instance.treatmentid = treat_instance
+                med_instance.save()
+                return redirect('doctor-medical-record')
+                         
+            else:
+                return render(request, 'doctor/add_medical_record.html', {'error':'Form is invalid'})
+            
+
+        except Exception as e:
+            messages.error(request, f"An unexpected error occurred: {str(e)}")
+    med_form = forms.MedicalRecord()
+    treat_form = forms.Treatment()
+    context = {'med_form':med_form, 'treat_form':treat_form}
+
+    return render(request, 'doctor/add_medical_record.html', context)
+
+
+
+
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_edit_medical_record(request, recordid):
+        medical_record = get_object_or_404(models.MedicalRecord, recordid=recordid)
+        treatment = medical_record.treatmentid
+
+        if request.method == 'POST':
+            med_form = forms.MedicalRecord(request.POST, instance=medical_record)
+            treat_form = forms.Treatment(request.POST, instance=treatment)
+
+            if med_form.is_valid() and treat_form.is_valid():
+                treat_instance = treat_form.save()
+
+                med_instance = med_form.save(commit=False)
+                med_instance.treatmentid = treat_instance
+                med_instance.save()
+
+                # messages.success(request, 'Medical record updated successfully!')
+                return redirect('doctor-medical-record')
+            else:
+                messages.error(request, 'Form validation failed. Please correct the errors.')
+
+        else:
+            med_form = forms.MedicalRecord(instance=medical_record)
+            treat_form = forms.Treatment(instance=treatment)
+
+        context = {'med_form': med_form, 'treat_form': treat_form}
+        return render(request, 'doctor/edit_medical_record.html', context)
+
+
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_delete_medical_record(request, recordid):
+    treatment = get_object_or_404(models.Treatment, treatmentid=recordid)
+    medical_record = get_object_or_404(models.MedicalRecord, recordid=recordid)
+    if request.method == 'POST':
+        try:
+            treatment.delete()
+            medical_record.delete()
+            return redirect('doctor-medical-record')
+        except Exception as e:
+            messages.error(request, f'An unexpected error occurred: {str(e)}')
+    context = {'medical_record':medical_record, 'treatment':treatment}
+    return render(request, 'doctor/delete_medical_record.html', context)
+
+
+@login_required(login_url='doctorlogin')
+@user_passes_test(is_doctor)
+def doctor_appointment(request):
+    appointment = models.Appointment.objects.filter(doctorid=request.user.username)
+    return render(request, 'doctor/appointment.html',{'appointment':appointment})
 #################################################################################
 #                             for nurse                                         #
 #################################################################################
+@login_required(login_url='nurselogin')
+@user_passes_test(is_nurse)
+def nurse_info(request):
+    nurse = get_object_or_404(models.MedicalStaff, staffid=request.user.username)
+    return render(request, 'nurse/info.html', {'form':nurse})
 
 
+
+
+@login_required(login_url='nurselogin')
+@user_passes_test(is_nurse)
+def nurse_medical_record(request):
+    q = """
+        select recordid, m.patientid, CONCAT(p.firstname, ' ', p.midname, ' ', p.lastname), recorddate, m.treatmentid, diagnosis, testresult,
+        t.treatmentdate, t.treatmentprocedure
+        from medical_record m
+        join patient p
+        on m.patientid = p.patientid
+        join treatment t on m.treatmentid = t.treatmentid
+        """
+    with connection.cursor() as cursor:
+        cursor.execute(q)
+        rows = cursor.fetchall()
+
+    medical_record = [
+        {
+            'recordid':row[0],
+            'patientid':row[1],
+            'fullname':row[2],
+            'date1':row[3],
+            'treatmentid':row[4],
+            'diagnosis':row[5],
+            'result':row[6],
+            'date2':row[7],
+            'procedure':row[8]
+        }for row in rows
+    ]
+
+    return render(request, 'nurse/medical_record.html', {'medical_record':medical_record})
+
+
+@login_required(login_url='nurselogin')
+@user_passes_test(is_nurse)
+def nurse_add_medical_record(request):
+    if request.method == 'POST':
+        try:
+            med_form = forms.MedicalRecord(request.POST)
+            treat_form = forms.Treatment(request.POST)
+            if med_form.is_valid() and treat_form.is_valid():
+                treat_instance = treat_form.save()
+                med_instance = med_form.save(commit=False)
+                med_instance.treatmentid = treat_instance
+                med_instance.save()
+                return redirect('nurse-medical-record')
+                         
+            else:
+                return render(request, 'nurse/add_medical_record.html', {'error':'Form is invalid'})
+            
+
+        except Exception as e:
+            messages.error(request, f"An unexpected error occurred: {str(e)}")
+    med_form = forms.MedicalRecord()
+    treat_form = forms.Treatment()
+    context = {'med_form':med_form, 'treat_form':treat_form}
+
+    return render(request, 'nurse/add_medical_record.html', context)
+
+
+
+
+@login_required(login_url='nurselogin')
+@user_passes_test(is_nurse)
+def nurse_edit_medical_record(request, recordid):
+        medical_record = get_object_or_404(models.MedicalRecord, recordid=recordid)
+        treatment = medical_record.treatmentid
+
+        if request.method == 'POST':
+            med_form = forms.MedicalRecord(request.POST, instance=medical_record)
+            treat_form = forms.Treatment(request.POST, instance=treatment)
+
+            if med_form.is_valid() and treat_form.is_valid():
+                treat_instance = treat_form.save()
+
+                med_instance = med_form.save(commit=False)
+                med_instance.treatmentid = treat_instance
+                med_instance.save()
+
+                # messages.success(request, 'Medical record updated successfully!')
+                return redirect('nurse-medical-record')
+            else:
+                messages.error(request, 'Form validation failed. Please correct the errors.')
+
+        else:
+            med_form = forms.MedicalRecord(instance=medical_record)
+            treat_form = forms.Treatment(instance=treatment)
+
+        context = {'med_form': med_form, 'treat_form': treat_form}
+        return render(request, 'nurse/edit_medical_record.html', context)
+
+
+@login_required(login_url='nurselogin')
+@user_passes_test(is_nurse)
+def nurse_delete_medical_record(request, recordid):
+    treatment = get_object_or_404(models.Treatment, treatmentid=recordid)
+    medical_record = get_object_or_404(models.MedicalRecord, recordid=recordid)
+    if request.method == 'POST':
+        try:
+            treatment.delete()
+            medical_record.delete()
+            return redirect('nurse-medical-record')
+        except Exception as e:
+            messages.error(request, f'An unexpected error occurred: {str(e)}')
+    context = {'medical_record':medical_record, 'treatment':treatment}
+    return render(request, 'nurse/delete_medical_record.html', context)
+
+
+@login_required(login_url='nurselogin')
+@user_passes_test(is_nurse)
+def nurse_doctor(request):
+    doctors = models.Doctor.objects.select_related('doctorid')  # Pre-fetch related MedicalStaff
+    doctor_data = [
+        {
+            'doctorid': doctor.doctorid.staffid,
+            'fullname': doctor.doctorid.fullname,  
+            'dob':doctor.doctorid.staffdob,
+            'gender' : doctor.doctorid.gender,
+            'phonenumber': doctor.doctorid.phonenumber,
+            'department': doctor.doctorid.departmentid,
+            'license': doctor.license,  
+        }
+        for doctor in doctors
+    ]
+    return render(request, 'nurse/doctor.html', {'doctor_data': doctor_data})
+
+@login_required(login_url='nurselogin')
+@user_passes_test(is_nurse)
+def nurse_patient(request):
+   patients = models.Patient.objects.all()
+   return render(request, 'nurse/patient.html', {'patients':patients})
+
+
+@login_required(login_url='nurselogin')
+@user_passes_test(is_nurse)
+def nurse_nurse(request):
+    nurses = models.Nurse.objects.select_related('nurseid')  # Pre-fetch related MedicalStaff
+    nurse_data = [
+        {
+            'nurseid': nurse.nurseid.staffid,
+            'fullname': nurse.nurseid.fullname,  
+            'dob':nurse.nurseid.staffdob,
+            'gender' : nurse.nurseid.gender,
+            'phonenumber': nurse.nurseid.phonenumber,
+            'department': nurse.nurseid.departmentid,
+            'yearexperience': nurse.yearexperience,  
+        }
+        for nurse in nurses
+    ]
+    return render(request, 'nurse/nurse.html', {'nurse_data': nurse_data})
+
+@login_required(login_url='nurselogin')
+@user_passes_test(is_nurse)
+def nurse_department(request):
+    q = """
+            SELECT 
+                d.departmentid,
+                d.departmentname,
+                CONCAT(ms.firstname, ' ', ms.midname, ' ', ms.lastname),
+                CONCAT(m.startdate, ' - Present')
+            FROM manages m
+            JOIN department d ON m.departmentid = d.departmentid
+            JOIN medical_staff ms ON doctorid = staffid;
+            """
+    with connection.cursor() as cursor:
+        cursor.execute(q)
+        rows = cursor.fetchall()
+    manage_data = [
+    {
+        'id': row[0],
+        'name': row[1],
+        'headname': row[2],
+        'period': row[3]
+    }
+    for row in rows
+    ]
+    return render(request, 'nurse/department.html', {'manage_data':manage_data})
+
+
+@login_required(login_url='nurselogin')
+@user_passes_test(is_nurse)
+def nurse_room(request):
+    q = """
+            select roomid, capacity, roomtype, GetPatientCountAtRoom(roomid)
+            from room
+        """
+    with connection.cursor() as cursor:
+        cursor.execute(q)
+        rows = cursor.fetchall()
+
+    room_data=[
+        {
+            'roomid':row[0],
+            'capacity':row[1],
+            'type':row[2],
+            'count':row[3]
+        }for row in rows
+    ]
+    return render(request, 'nurse/room.html' ,{'rooms':room_data})
+
+
+@login_required(login_url='nurselogin')
+@user_passes_test(is_nurse)
+def nurse_show_room(request, roomid):
+    q = """
+            select p.patientid, concat(p.firstname, ' ', p.midname, ' ', p.lastname), 
+            p.patientssn, p.patientdob, p.phonenumber, p.gender, concat(p.street, ' ', p.district, ' ', p.city),
+            admitteddate, dischargeddate
+            from patient p
+            join admitted_to at on p.patientid = at.patientid
+            where admitteddate <= now() and (dischargedDate > NOW() OR dischargedDate IS NULL) and at.roomid = %s
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(q, [roomid])
+        rows = cursor.fetchall()
+    room_info = [
+        {
+            'id':row[0],
+            'fullname':row[1],
+            'ssn':row[2],
+            'dob':row[3],
+            'phonenumber':row[4],
+            'sex':row[5],
+            'adr':row[6],
+            'admitted':row[7],
+            'discharged':row[8],
+        }for row in rows
+    ]
+    return render(request, 'nurse/show_room.html', {'room_info':room_info, 'roomid':roomid})

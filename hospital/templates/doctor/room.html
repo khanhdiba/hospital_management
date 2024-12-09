@@ -1,0 +1,44 @@
+{% extends 'doctor/base.html' %}
+
+{% block content %}
+<br><br><br>
+<h1 style="text-align: center;font-family: 'Lucida Sans';">Room List</h1>
+<table class="table table-bordered table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>Room ID</th>
+            <th>Capacity</th>
+            <th>Room Type</th>
+            <th>Current Number of Patients</th>
+            <!-- <th>Add Patient</th> -->
+            <th>List of Patients</th>
+            <!-- <th>Nurse ID</th>
+            <th>Nurse Name</th>
+            <th>Patient ID</th>
+            <th>Patient Name</th>
+            <th>Admitted Date</th>
+            <th>Discharged Date</th>
+            <th>Edit Information</th>
+            <th>Delete Information</th> -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for room in rooms %}
+        <tr>
+            <td>{{ room.roomid }}</td>
+            <td>{{ room.capacity }}</td>
+            <td>{{ room.type }}</td>
+            <td>{{ room.count }}</td>
+            <!-- <td>
+                <a href="{% url 'admin-add-room' room.roomid %}" class="btn btn-success btn-sm">Add Patient</a>
+            </td> -->
+            <td>
+                <a href="{% url 'doctor-show-room' room.roomid %}" class="btn btn-success btn-sm">List of Patients</a>
+            </td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+
+
+{% endblock content %}

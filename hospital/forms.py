@@ -16,7 +16,7 @@ class AdminUserForm(forms.ModelForm):
 class DoctorUserForm(forms.ModelForm):
     class Meta:
         model=User
-        fields=['first_name','last_name','username','password']
+        fields=['username','password']
         widgets = {
         'password': forms.PasswordInput()
         }
@@ -33,7 +33,7 @@ class RecepUserForm(forms.ModelForm):
 class NurseUserForm(forms.ModelForm):
     class Meta:
         model=User
-        fields=['first_name','last_name','username','password']
+        fields=['username','password']
         widgets = {
         'password': forms.PasswordInput()
         }

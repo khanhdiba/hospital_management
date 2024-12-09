@@ -279,17 +279,22 @@
   <nav class="menu" tabindex="0" style=" width:15.6%;">
     <div class="smartphone-menu-trigger"></div>
     <header class="avatar">
-      <img src="{% static "image/nursepropic.png" %}" alt = 'avatar'>
+      <!-- <img src="{% static "image/nursepropic.png" %}" alt = 'avatar'> -->
       <br><br>
       <h6>Nurse</h6>
-      <h2>{{request.user.first_name}}</h2>
+      <h2>{{request.user.username}}</h2>
     </header>
     <ul>
       <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/nurse-dashboard"><span>Dashboard</span></a> </li>
-      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/nurse-patient"><span>Patient</span></a> </li>
-      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/nurse-treatment"><span>Treatment</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/nurse-info"><span>Information</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/nurse-medical-record"><span>Medical Record and Treatment</span></a> </li>
+
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/nurse-patient"><span>Patient List</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/nurse-doctor"><span>Doctor List</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/nurse-nurse"><span>Nurse List</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/nurse-department"><span>Department List</span></a> </li>
       <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/nurse-room"><span>Room</span></a> </li>
-      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/nurse-other"><span>Others</span></a> </li>
+      <!-- <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/nurse-other"><span>Others</span></a> </li> -->
 
       <!-- <li tabindex="0" class="icon-customers"> <a style="color:white; text-decoration:none;" href="/nurse-nurse"><span>nurse</span></a></li>
       <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/nurse-nurse"><span>nurse</span></a></li>

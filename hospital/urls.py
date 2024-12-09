@@ -86,7 +86,7 @@ urlpatterns += [
 ############################################################################
 
 urlpatterns += [
-    path('recep-admit', views.recep_admit, name='recep-admit'),
+    path('recep-patient', views.recep_patient, name='recep-patient'),
     path('recep-add-patient', views.recep_add_patient, name='recep-add-patient'),
     path('recep-delete-patient/<str:patientid>/', views.recep_delete_patient, name='recep-delete-patient'),
     path('recep-edit-patient/<str:patientid>/', views.recep_edit_patient, name='recep-edit-patient'),
@@ -95,6 +95,14 @@ urlpatterns += [
     path('recep-delete-appointment/<int:appointmentid>/', views.recep_delete_appointment, name='recep-delete-appointment'),
     path('recep-edit-appointment/<int:appointmentid>/', views.recep_edit_appointment, name='recep-edit-appointment'),
     path('recep-add-appointment', views.recep_add_appointment, name='recep-add-appointment'),
+
+    path('recep-doctor', views.recep_doctor, name='recep-doctor'),
+    path('recep-nurse', views.recep_nurse, name='recep-nurse'),
+    path('recep-department', views.recep_department, name='recep-department'),
+
+    path('recep-room', views.recep_room, name='recep-room'),
+    path('recep-add-room/<str:roomid>/', views.recep_add_room, name='recep-add-room'),
+    path('recep-show-room/<str:roomid>/', views.recep_show_room, name='recep-show-room')
 
 ]
 
@@ -110,4 +118,41 @@ urlpatterns += [
     path('patient-doctor', views.patient_doctor, name='patient-doctor'),
     path('patient-nurse', views.patient_nurse, name='patient-nurse'),
     path('patient-department', views.patient_department, name='patient-department'),
+]
+
+
+
+#Doctor
+urlpatterns += [
+    path('doctor-info', views.doctor_info, name='doctor-info'),
+    path('doctor-doctor', views.doctor_doctor, name='doctor-doctor'),
+    path('doctor-nurse', views.doctor_nurse, name='doctor-nurse'),
+    path('doctor-patient', views.doctor_patient, name='doctor-patient'),
+    path('doctor-department', views.doctor_department, name='doctor-department'),
+    path('doctor-room', views.doctor_room, name='doctor-room'),
+    path('doctor-show-room/<str:roomid>/', views.doctor_show_room, name='doctor-show-room'),
+
+    path('doctor-medical-record', views.doctor_medical_record, name='doctor-medical-record'),
+    path('doctor-add-medical-record', views.doctor_add_medical_record, name='doctor-add-medical-record'),
+    path('doctor-edit-medical-record/<int:recordid>/', views.doctor_edit_medical_record, name='doctor-edit-medical-record'),
+    path('doctor-delete-medical-record/<int:recordid>/', views.doctor_delete_medical_record, name='doctor-delete-medical-record'),
+    path('doctor-appointment', views.doctor_appointment, name='doctor-appointment')
+
+]
+
+
+#Nurse
+urlpatterns += [
+    path('nurse-info', views.nurse_info, name='nurse-info'),
+    path('nurse-medical-record', views.nurse_medical_record, name='nurse-medical-record'),
+    path('nurse-add-medical-record', views.nurse_add_medical_record, name='nurse-add-medical-record'),
+    path('nurse-edit-medical-record/<int:recordid>/', views.nurse_edit_medical_record, name='nurse-edit-medical-record'),
+    path('nurse-delete-medical-record/<int:recordid>/', views.nurse_delete_medical_record, name='nurse-delete-medical-record'),
+    path('nurse-doctor', views.nurse_doctor, name='nurse-doctor'),
+    path('nurse-nurse', views.nurse_nurse, name='nurse-nurse'),
+    path('nurse-patient', views.nurse_patient, name='nurse-patient'),
+    path('nurse-department', views.nurse_department, name='nurse-department'),
+
+    path('nurse-room', views.nurse_room, name='nurse-room'),
+    path('nurse-show-room/<str:roomid>/', views.nurse_show_room, name='nurse-show-room'),
 ]

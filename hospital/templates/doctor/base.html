@@ -278,18 +278,23 @@
   <nav class="menu" tabindex="0" style=" width:15.6%;">
     <div class="smartphone-menu-trigger"></div>
     <header class="avatar">
-      <img src="{% static "image/doctorpropic.png" %}" alt = 'avatar'>
+      <!-- <img src="{% static "image/doctorpropic.png" %}" alt = 'avatar'> -->
       <br><br>
       <h6>Doctor</h6>
-      <h2>{{request.user.first_name}}</h2>
+      <h2>{{request.user.username}}</h2>
     </header>
     <ul>
       <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-dashboard"><span>Dashboard</span></a> </li>
-      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-treatment"><span>Treatment</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-info"><span>Doctor Information</span></a> </li>
+
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-medical-record"><span>Medical Record and Treatment</span></a> </li>
       <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-doctor"><span>Doctor</span></a> </li>
       <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-patient"><span>Patient</span></a> </li>
       <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-nurse"><span>Nurse</span></a> </li>
-      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-other"><span>Others</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-department"><span>Department</span></a> </li>
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-room"><span>Room</span></a> </li>
+
+      <li tabindex="0"> <a style="color:white; text-decoration:none;" href="/doctor-appointment"><span>Appointment</span></a> </li>
 
       <!-- <li tabindex="0" class="icon-customers"> <a style="color:white; text-decoration:none;" href="/doctor-doctor"><span>Doctor</span></a></li>
       <li tabindex="0" class="icon-users"> <a style="color:white; text-decoration:none;" href="/doctor-doctor"><span>doctor</span></a></li>

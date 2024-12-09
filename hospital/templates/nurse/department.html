@@ -1,0 +1,29 @@
+{% extends 'nurse/base.html' %}
+
+{% block content %}
+<br><br><br>
+<h1 style="text-align: center;">Department List</h1>
+<table class="table table-bordered table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Department ID</th>
+            <th scope="col">Department Name</th>
+            <th scope="col">Head Doctor</th>
+            <th scope="col">Period</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for d in manage_data %}
+            <tr>
+                <td>{{ d.id }}</td>
+                <td>{{ d.name }}</td>
+                <td>{{ d.headname }}</td>
+                <td>{{ d.period }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock content %}
