@@ -20,6 +20,8 @@ FACULTY OF COMPUTER SCIENCE AND ENGINEERING
 
 <h2 align="center">Baka Hospital Management</h2>
 
+<h3 align="center">Update date 10/12/2024: We achieved score 10.0/10.0</h3>  
+
 <!-- ![](/img/homepage.png) -->
 
 <h2 align="center">Languages, Technologies and Tools</h2>
@@ -79,3 +81,5 @@ As the clip shows, we can perform some simple operations such as:
     <a href="https://github.com/TNAK2004"><img src="https://avatars.githubusercontent.com/u/186653019?v=4" title="TNAK2004" width="50" height="50"></a>
     
 </div>
+
+
